@@ -154,7 +154,7 @@ U0 BlkDevDel(CBlkDev *bd)
 CBlkDev *BlkDevChk(CBlkDev *bd,Bool except=TRUE)
 {//Check for valid BlkDev. Throw exception.
   if (!bd || bd->bd_signature!=BD_SIGNATURE_VAL ||
-	!(BDT_NULL<bd->type<BDT_TYPES_NUM)) {
+	!(BDT_NULL<bd->type<BDT_TYPES_NUM)) {
     if (except)
       throw('BlkDev');
     else

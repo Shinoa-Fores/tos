@@ -7,7 +7,7 @@ U0 DirContextDel(CDirContext *dirc,Bool restore=TRUE)
       goto defacto;
     bd=dirc->old_dv->bd;
     if(!BlkDevChk(bd,FALSE))
-       goto old_dv;
+       goto old_dv;
     if (!(bd->flags & BDF_INIT_IN_PROGRESS)) {
 old_dv:
       if (dirc->old_dir) {

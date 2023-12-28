@@ -1,7 +1,7 @@
 #help_index "Graphics/Math/3D Transformation"
 
 public U0 Mat4x4MulXYZ(I64 *r,I64 *_x,I64 *_y,I64 *_z)
-{//Rotate 3D point using 4x4 matrix. Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+{//Rotate 3D point using 4x4 matrix. Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   I64 x1,y1,z1,xx=*_x,yy=*_y,zz=*_z;
   x1=(r[0*4+0]*xx+r[0*4+1]*yy+r[0*4+2]*zz+r[0*4+3])>>32;
   y1=(r[1*4+0]*xx+r[1*4+1]*yy+r[1*4+2]*zz+r[1*4+3])>>32;
@@ -11,7 +11,7 @@ public U0 Mat4x4MulXYZ(I64 *r,I64 *_x,I64 *_y,I64 *_z)
 
 public U0 DCTransform(CDC *dc,I64 *_x,I64 *_y,I64 *_z)
 {//This is the dft dc->transform() callback.
-//Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+//Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   Mat4x4MulXYZ(dc->r,_x,_y,_z);
   *_x+=dc->x;
   *_y+=dc->y;
@@ -19,7 +19,7 @@ public U0 DCTransform(CDC *dc,I64 *_x,I64 *_y,I64 *_z)
 }
 
 public I64 *Mat4x4IdentEqu(I64 *r)
-{//Set matrix to identity. Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+{//Set matrix to identity. Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   MemSet(r,0,sizeof(I64)*16);
   r[0*4+0].i32[1]=1;
   r[1*4+1].i32[1]=1;
@@ -29,7 +29,7 @@ public I64 *Mat4x4IdentEqu(I64 *r)
 }
 
 public I64 *Mat4x4IdentNew(CTask *mem_task=NULL)
-{//MAlloc an identity matrix. Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+{//MAlloc an identity matrix. Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   return Mat4x4IdentEqu(MAlloc(sizeof(I64)*16,mem_task));
 }
 
@@ -42,7 +42,7 @@ public I64 Mat4x4NormSqr65536(I64 *r)
 }
 
 public U0 DCMat4x4Set(CDC *dc=NULL,I64 *r)
-{//Set device context's rot matrix. Will be \dLK,"Free",A="MN:Free"\dd() in \dLK,"DCDel",A="MN:DCDel"\d().Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+{//Set device context's rot matrix. Will be $LK,"Free",A="MN:Free"$d() in $LK,"DCDel",A="MN:DCDel"$().Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
 //The main purpose is to set matrix norm for thick scaling.
   //NULL as dc means gr.dc
   if (!dc)   dc=gr.dc;
@@ -129,7 +129,7 @@ public U0 DCClear(CDC *dc=NULL)
 }
 
 public U0 DCRst(CDC *dc)
-{//Reset \dLK,"CDC",A="MN:CDC"\d structure members but not image body, itself.
+{//Reset $LK,"CDC",A="MN:CDC"$ structure members but not image body, itself.
   dc->color=BLACK;
   dc->color2=BLACK;
   dc->bkcolor=BLACK;
@@ -152,7 +152,7 @@ public U0 DCRst(CDC *dc)
 public U0 DCExtentsInit(CDC *dc=NULL)
 {//Init markers for extent of next newly drawn graphics.
 //NULL means gr.dc
-  //See \dLK,"::/Demo/Graphics/Extents.HC"\d
+  //See $LK,"::/Demo/Graphics/Extents.HC"$
   //You should clear the record flag yourself
   if (!dc)   dc=gr.dc;
   dc->flags|=DCF_RECORD_EXTENTS;
@@ -183,7 +183,7 @@ public CDC *DCAlias(CDC *dc=NULL,CTask *task=NULL)
 public CDC *DCNew(I64 width,I64 height,CTask *task=NULL,Bool null_bitmap=FALSE)
 {//Create new width x height device context.
 //Internally only allows widths which are divisible by 8.
-  //Don't forget these \dMA-X+PU,"sizeof(CDC)",LM="Find(\"sizeof(CDC)\",\"/*\");View;"\d.
+  //Don't forget these $MA-X+PU,"sizeof(CDC)",LM="Find(\"sizeof(CDC)\",\"/*\");View;"$.
   CDC *res;
   if (!task) task=Fs;
   res=CAlloc(sizeof(CDC),task);

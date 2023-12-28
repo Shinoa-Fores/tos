@@ -1,6 +1,6 @@
 #help_index "DolDoc/Link"
 
-/* See \dLK,"TempleOS Link Types",A="MN:ST_LINK_TYPES"\d.
+/* See $LK,"TempleOS Link Types",A="MN:ST_LINK_TYPES"$.
 "filename"
 "FI:filename"
 "FA:haystack_filename,needle_anchor_str"
@@ -18,7 +18,7 @@
 "HI:index"
 "AD:code_address_number"
 
-To edit a doc structure already in memory. See \dLK,"SpriteEdText",A="MN:SpriteEdText"\d().
+To edit a doc structure already in memory. See $LK,"SpriteEdText",A="MN:SpriteEdText"$().
 "AI:doc_address"
 "AA:haystack_doc_address,needle_anchor_str"
 "AF:haystack_doc_address,needle_str"
@@ -75,7 +75,7 @@ Bool DocFileEd(I64 _type,U8 *filename,
     flags|=DOCF_ALLOW_UNDO;
 
     if (LK_DOC<=_type<=LK_DOC_LINE) {
-      doc=Str2I64(filename);//See \dLK,"SpriteEdText",A="MN:SpriteEdText"\d()
+      doc=Str2I64(filename);//See $LK,"SpriteEdText",A="MN:SpriteEdText"$()
       res=TRUE;
     } else {
       st1=StrNew(filename);
@@ -162,7 +162,7 @@ Bool DocFileEd(I64 _type,U8 *filename,
 
 public I64 EdLinkCvt(U8 *link_st,U8 **_filename=NULL,U8 **_needle_str=NULL,
 	I64 *_num=NULL,I64 edf_dof_flags=0)
-{//\dLK,"Editor Link",A="MN:LK_FILE"\d--> filename, needle_str and line number.
+{//$LK,"Editor Link",A="MN:LK_FILE"$--> filename, needle_str and line number.
   U8 *st,*ptr,*src,*filename=NULL,*needle_str=NULL,*filename2;
   I64 res,i,num=1;
   CHashSrcSym *tmph;
@@ -282,7 +282,7 @@ lc_done:
 }
 
 public Bool DocLinkChk(CDoc *doc,U8 *link_st)
-{//Check for bad \dLK,"Editor Link",A="MN:LK_FILE"\d.
+{//Check for bad $LK,"Editor Link",A="MN:LK_FILE"$.
   U8 *filename,*st;
   Bool res=FALSE;
   CDirContext *dirc;
@@ -319,7 +319,7 @@ public Bool DocLinkChk(CDoc *doc,U8 *link_st)
 }
 
 public U8 *DocLinkFile(U8 *link_st,CTask *mem_task=NULL)
-{//Return the file for an \dLK,"Editor Link Types",A="MN:LK_FILE"\d.
+{//Return the file for an $LK,"Editor Link Types",A="MN:LK_FILE"$.
   U8 *filename=NULL,*st,*res=NULL;
   if (link_st) {
     switch (EdLinkCvt(link_st,&filename)) {

@@ -27,7 +27,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
     contiguous=TRUE;
   if (contiguous) {
     f->flags|=FF_CONTIGUOUS;
-    if (f->dv->fs_type!=FSt_REDSEA &&
+    if (f->dv->fs_type!=FSt_REDSEA && f->dv->fs_type!=FSt_VIRT &&
 	  !(FileAttr(filename) & RS_ATTR_CONTIGUOUS))
       throw('File');
   }
@@ -36,7 +36,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
     f->flags=f->flags|FF_WRITE|FF_NEEDS_WRITE;
     if (StrOcc(flags,'+')) {
       if (FileFind(full_name,&f->de,FUF_JUST_FILES)) {
-//Modified for tos
+//Modified for TINE
         if(Let2BlkDevType(*full_name)==BDT_VIRT) {
 	  dirc=DirContextNew(full_name);
 	  VFsSetDrv(Fs->cur_dv->drv_let);
@@ -57,7 +57,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
     if (dirc=DirContextNew(full_name)) {
       StrCpy(f->de.name,dirc->mask);
       if (cnt>0) {//We pre-alloc the whole thing.
-//Modified for tos
+//Modified for TINE
         if(Let2BlkDevType(*full_name)!=BDT_VIRT) {
 	  f->de.clus=ClusAlloc(f->dv,0,
 	        (cnt+f->dv->spc-1)/f->dv->spc,contiguous);
@@ -67,7 +67,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
         f->flags&=~FF_NEW_FILE;
 
       }
-//Modified for tos
+//Modified for TINE
       if(Let2BlkDevType(*full_name)==BDT_VIRT) {
         VFsSetPwd(Fs->cur_dir);
         f->_file_virt=VFsFOpenW(&f->de.name);
@@ -78,7 +78,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
     }
   } else {
     if (FileFind(full_name,&f->de,FUF_JUST_FILES)) {
-//Modified for tos
+//Modified for TINE
       if(Let2BlkDevType(*full_name)==BDT_VIRT) {
         dirc=DirContextNew(full_name);
         VFsSetPwd(Fs->cur_dir);
@@ -97,7 +97,7 @@ CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL)
   return NULL;
 }
 
-U0 FClose(CFile *f)
+U0 FClose(CFile *f)
 {//Close CFile, updating directory.
   CDirContext *dirc;
   if (f) {
@@ -164,7 +164,7 @@ I64 FSetClus(CFile *f,I64 c,I64 blk,Bool read)
   return c;
 }
 
-Bool FBlkRead(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
+public Bool FBlkRead(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
 {//Read [nth,n+cnt) blks of file.
   if(f->_file_virt) {
     if (blk==FFB_NEXT_BLK) 
@@ -223,12 +223,24 @@ Bool FBlkRead(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
   return TRUE;
 }
 
-Bool FBlkWrite(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
+public Bool FBlkWrite(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
 {//Write [nth,n+cnt) blks of file.
+  CDrv *dv=f->dv;
+  I64 spc=dv->spc,i,j,c=f->de.clus,c1;
+  U8 zeros[BLK_SIZE];
   if(f->_file_virt) {
     if(blk==FFB_NEXT_BLK)
       blk=f->fblk_num;
-    VFsFSeek(blk<<BLK_SIZE_BITS,f->_file_virt);
+    if (VFsFSeek(blk<<BLK_SIZE_BITS,f->_file_virt)) { // true on seek fail
+      // if we fail,we will seek to the last known good part of the file
+      // and fill with zeros
+      j=f->de.size>>BLK_SIZE_BITS;
+      VFsFSeek(j*BLK_SIZE,f->_file_virt);
+      MemSet(zeros,0,BLK_SIZE);
+      i=blk-j;
+      while (--i>=0)
+        VFsFBlkWrite(zeros,BLK_SIZE,1,f->_file_virt);
+    }
     VFsFBlkWrite(buf,1<<BLK_SIZE_BITS,cnt,f->_file_virt);
     blk+=cnt;
     f->fblk_num=blk;
@@ -236,8 +248,6 @@ Bool FBlkWrite(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1)
       f->de.size=blk<<BLK_SIZE_BITS;
     return TRUE;
   }
-  CDrv *dv=f->dv;
-  I64 spc=dv->spc,i,j,c=f->de.clus,c1;
   if (!f || !dv) return FALSE;
   if (blk==FFB_NEXT_BLK)
     blk=f->fblk_num;

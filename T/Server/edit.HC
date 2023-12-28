@@ -194,7 +194,7 @@ loop:
     }
     Free(ftxt);
     WriteLn(stream,NULL,"</TEXTAREA>");
-    WriteLn(stream,NULL,"<FIELDSET CLASS=\"form-group\">");
+    WriteLn(stream,NULL,"<FIELDSET CLASS=\"form-group\">");
     WriteLn(stream,NULL,"<LEGEND>Preview or Publish?</LEGEND>");
     WriteLn(stream,NULL,"<LABEL CLASS=\"paper-radio\" FOR=\"PREVIEW\">");
     WriteLn(stream,NULL,"<INPUT TYPE=\"radio\" ID=\"PREVIEW\" NAME=\"PREVIEW\" VALUE=\"PREVIEW\" CHECKED=\"checked\">");

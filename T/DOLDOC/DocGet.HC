@@ -14,7 +14,7 @@ U0 EdUndoFilter(CDoc *doc)
 }
 
 public I64 DocGetKey(I64 *_sc=NULL)
-{//Called by \dLK,"View",A="MN:View"\d. You probably don't need this.
+{//Called by $LK,"View",A="MN:View"$. You probably don't need this.
   I64 ch,sc;
   Bool cont,old_key_desc;
   do {
@@ -55,7 +55,7 @@ public U8 *DocScanLine(CDoc *doc,CDocEntry *doc_e,
 	  doc_e2->type_u8==DOCT_SHIFTED_Y) {
       if (doc_e2->attr<0)
 	i++;
-      i+=6; //\dSY,3\d
+      i+=6; //$SY,3$
     }
     doc_e2=doc_e2->next;
   }
@@ -96,7 +96,7 @@ public U8 *DocScanLine(CDoc *doc,CDocEntry *doc_e,
 }
 
 U8 *DocGetStr2(I64 flags=0)
-{//\dLK,"Flags",A="MN:GSF_SHIFT_ESC_EXIT"\d
+{//$LK,"Flags",A="MN:GSF_SHIFT_ESC_EXIT"$
   CDoc *doc;
   CDocEntry *doc_e,*doc_e_end;
   U8 *st,*st2,*res;
@@ -222,7 +222,7 @@ public F64 GetF64(U8 *msg=NULL,F64 dft=0,F64 lo=F64_MIN,F64 hi=F64_MAX)
 }
 public CDate GetDate(U8 *msg=NULL,CDate dft=I64_MIN,
 	CDate lo=I64_MIN,CDate hi=I64_MAX)
-{//Prompt user for date expression. (Use \dLK,"Now",A="MN:Now"\d() if you want current time.)
+{//Prompt user for date expression. (Use $LK,"Now",A="MN:Now"$() if you want current time.)
   U8 *st;
   CDate res;
   if (dft==I64_MIN) dft=Now;

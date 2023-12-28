@@ -913,7 +913,7 @@ if(!dc) dc=gr.dc;
 }
 
 I64 GrPutS(CDC *dc=NULL,I64 x,I64 y,U8 *_s)
-{//Use \dLK,"GrPrint",A="MN:GrPrint"\d()
+{//Use $LK,"GrPrint",A="MN:GrPrint"$()
 if(!dc) dc=gr.dc;
   I64 x0,sx=0,sy=0,res;
   if (!_s) return 0;
@@ -951,7 +951,7 @@ if(!dc) dc=gr.dc;
 }
 
 I64 GrVPutS(CDC *dc=NULL,I64 x,I64 y,U8 *_s)
-{//Vertical Text.  Use \dLK,"GrVPrint",A="MN:GrVPrint"\d()
+{//Vertical Text.  Use $LK,"GrVPrint",A="MN:GrVPrint"$()
 if(!dc) dc=gr.dc;
   I64 y0,sx=0,sy=0,res;
   U8 buf[2];
@@ -1724,7 +1724,7 @@ gr_done:
 public I64 GrHLine(CDC *dc=NULL,I64 x1,I64 x2,I64 y,I64 z1=0,I64 z2=0)
 {//3D. No transformation or thick.
 //Returns cnt of pixs changed
-  //Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+  //Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   if(!dc) dc=gr.dc;
   I64 dist,dx,dz,z,res=0,i,j,d;
   U8 *dst;
@@ -1894,7 +1894,7 @@ gr_done:
 public I64 GrVLine(CDC *dc=NULL,I64 x,I64 y1,I64 y2,I64 z1=0,I64 z2=0)
 {//3D. No transformation or thick.
 //Returns cnt of pixs changed
-  //Uses \dLK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"\d.
+  //Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
   if(!dc) dc=gr.dc;
   I64 dist,dy,dz,z,res=0,i,j,d;
   U8 *dst;

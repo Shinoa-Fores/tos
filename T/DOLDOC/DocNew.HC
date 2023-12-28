@@ -37,7 +37,7 @@ Bool IsEditableText(CDocEntry *doc_e)
 
 CDocEntry *DocEntryNewBase(CDoc *doc,I64 type,I64 de_flags=0,
 	I64 x=0,I64 y=0,I64 page_line_num=0)
-{//See also \dLK,"MAllocIdent",A="FF:::/Adam/DolDoc/DocRecalc.HC,MAllocIdent"\d and \dMA-X+PU,"CDocEntry",LM="F(\"sizeof(CDocEntry)\");View;"\d.
+{//See also $LK,"MAllocIdent",A="FF:::/Adam/DolDoc/DocRecalc.HC,MAllocIdent"$ and $MA-X+PU,"CDocEntry",LM="F(\"sizeof(CDocEntry)\");View;"$.
   CDocEntry *res=CAlloc(sizeof(CDocEntryBase),doc->mem_task);
   res->type=type;
   res->de_flags=de_flags|doldoc.dft_de_flags[type.u8[0]];
@@ -265,7 +265,7 @@ public U0 DocRst(CDoc *doc,Bool is_old)
       b=b1;
     }
   }
-//Check \dLK,"DocInsDoc",A="MN:DocInsDoc"\d
+//Check $LK,"DocInsDoc",A="MN:DocInsDoc"$
   doc->flags&=DOCF_BREAK_UNLOCKED;
   doc->head.next=doc->head.last=doc;
   QueInit(&doc->bin_head);
@@ -364,7 +364,7 @@ I64 EdLeftClickLink0(CDoc *doc,CDocEntry *doc_e) {
     return EdLeftClickLink(doc,doc_e);
 }
 public CDoc *DocNew(U8 *filename=NULL,CTask *task=NULL)
-{//MAlloc new \dLK,"DolDoc",A="FI:::/Doc/DolDocOverview.DD"\d. (Begin a new doc.)
+{//MAlloc new $LK,"DolDoc",A="FI:::/Doc/DolDocOverview.DD"$. (Begin a new doc.)
   CDoc *doc;
   if (!task) task=Fs;
   doc=CAlloc(sizeof(CDoc),task);

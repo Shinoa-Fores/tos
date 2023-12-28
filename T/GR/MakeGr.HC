@@ -12,9 +12,8 @@
 #include "GrMath.HC"
 #include "GrScrn.HC"
 #include "GrBitMap.HC"
-#include "GrPrimatives.HC"
+#include "GrPrimitives.HC"
 #include "GrComposites.HC"
-#include "ScrnCast.HC"
 
 
 #include "SpriteNew.HC"

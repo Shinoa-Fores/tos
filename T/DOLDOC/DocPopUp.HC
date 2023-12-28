@@ -23,7 +23,7 @@ public CTask *PopUpViewPrint(U8 *fmt,...)
 
 #help_index "DolDoc/Input;File/FileNames;StdIn/DolDoc"
 public U8 *PopUpPickFile(U8 *dir=NULL)
-{//Filename chooser.  Uses \dLK,"FileMgr",A="MN:FileMgr"\d().
+{//Filename chooser.  Uses $LK,"FileMgr",A="MN:FileMgr"$().
   U8 *res,*st,*st2;
   if (dir)
     st=MStrPrint("Cd(\"%Q\");FileMgr(FM_PICK_FILE,Fs->parent_task);",dir);
@@ -38,7 +38,7 @@ public U8 *PopUpPickFile(U8 *dir=NULL)
 }
 
 public U8 *PopUpPickDir(U8 *dir=NULL)
-{//File dir name chooser.  Uses \dLK,"FileMgr",A="MN:FileMgr"\d().
+{//File dir name chooser.  Uses $LK,"FileMgr",A="MN:FileMgr"$().
   U8 *res,*st,*st2;
   if (dir)
     st=MStrPrint("Cd(\"%Q\");FileMgr(FM_PICK_DIR,Fs->parent_task);",dir);
@@ -66,7 +66,7 @@ public U8 *FileNameForm(U8 *dft=NULL,I64 dof_flags=0,CTask *mem_task=NULL)
 }
 
 public U8 *PopUpFileName(U8 *dft=NULL,I64 dof_flags=0)
-{//Filename chooser. Uses form, not \dLK,"FileMgr",A="MN:FileMgr"\d().
+{//Filename chooser. Uses form, not $LK,"FileMgr",A="MN:FileMgr"$().
   U8 *st=MStrPrint("FileNameForm(\"%Q\",0x%X,Fs->parent_task);",
 	dft,dof_flags|DOF_SIZE_MIN),*res=PopUp(st,Fs);
   Free(st);
@@ -108,7 +108,7 @@ public I64 PopUpPickLst(U8 *lst)
 
 #help_index "DolDoc/Input;Char/Lists;Char/Define;StdIn/DolDoc"
 public U8 *PopUpPickDefineSub(U8 *dname)
-{//Prompt for \dLK,"Define",A="HI:Define"\d lst entry in PopUp win task.
+{//Prompt for $LK,"Define",A="HI:Define"$ lst entry in PopUp win task.
   return PopUpPickLst(Define(dname));
 }
 
@@ -282,7 +282,7 @@ public I64 AdamFile(U8 *filename,Bool warn_ext=TRUE)
 }
 public I64 PopUpFile(U8 *filename,Bool warn_ext=TRUE,
 	CTask *parent=NULL,CTask **_pu_task=NULL)
-{//\dLK,"ExeFile2",A="MN:ExeFile2"\d() in \dLK,"PopUp",A="MN:PopUp"\d task. Cont as User.
+{//$LK,"ExeFile2",A="MN:ExeFile2"$() in $LK,"PopUp",A="MN:PopUp"$ task. Cont as User.
   Bool okay=TRUE;
   U8 *st,*name=FileNameAbs(filename),
 	*name2=ExtDft(name,"HC.Z");
@@ -305,7 +305,7 @@ public I64 PopUpFile(U8 *filename,Bool warn_ext=TRUE,
 }
 
 public I64 PopUpRunFile(U8 *filename,I64 ccf_flags=0,...)
-{//\dLK,"ExeFile",A="MN:ExeFile"\d() with args using \dLK,"LastFun",A="MN:LastFun"\d() in \dLK,"PopUp",A="MN:PopUp"\d task.
+{//$LK,"ExeFile",A="MN:ExeFile"$() with args using $LK,"LastFun",A="MN:LastFun"$() in $LK,"PopUp",A="MN:PopUp"$ task.
   U8 *st,*name=FileNameAbs(filename),
 	*name2=ExtDft(name,"HC.Z");
   I64 res=0;

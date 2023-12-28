@@ -236,7 +236,7 @@ U0 GrUpdateTextBG()
 }
 
 U0 GrUpdateTextFG()
-{//See \dLK,"TextBase Layer",A="HI:TextBase Layer"\d.
+{//See $LK,"TextBase Layer",A="HI:TextBase Layer"$.
   U32 *src=gr.text_base;
   I64 i,j,cur_ch,*dst=gr.dc2->body,
 	w1=gr.dc2->width_internal,w2=7*w1,w4=0,
@@ -363,8 +363,6 @@ U0 GrUpdateVGAGraphics()
 {//Update Graphic Card
 }
 U8 *_screen=NULL;
-/*if(!__IsCmdLine)
-  _screen=DrawWindowNew;//resolved in loader side*/
 U0 ScaleMouseCords(I64 *x,I64 *y) {
   I64 x2=*x,y2=*y;
   x2=(ToF64(x2)/640*640.);
@@ -376,7 +374,7 @@ U0 ScaleMouseCords(I64 *x,I64 *y) {
 }
 I64 scrn_lock=0;
 U0 GrUpdateScrn()
-{//Called by the Window Manager \dLK,"HERE",A="FF:::/Adam/WinMgr.HC,GrUpdateScrn"\d, 30 times a second.
+{//Called by the Window Manager $LK,"HERE",A="FF:::/Adam/WinMgr.HC,GrUpdateScrn"$, 30 times a second.
   I64 idx;
   CDC *dc;
   while(LBts(&scrn_lock,0))
@@ -398,8 +396,6 @@ U0 GrUpdateScrn()
     GrZoomInScrn;
     dc=gr.zoomed_dc;
   }
-  DrawWindowUpdate(dc->body,dc->width_internal);
-  //God willing they are the same size
-  MemCpy(gr.scrn_image->body,gr.dc2->body,MSize(gr.scrn_image->body));
+  DrawWindowUpdate(dc->body);
   LBtr(&scrn_lock,0);
 }

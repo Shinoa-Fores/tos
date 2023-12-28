@@ -1,11 +1,6 @@
 // Main TempleOS header
 //
-// These are modified for tos; they dont take CTask * as an argument
-//
-#define __tos__ TRUE
-    // "tos"(lowercase)
-    // does not refer to TempleOS(TOS), it's the name
-    // of this emulator/runtime/loader/whatever
+#define __TINE__ TRUE
 extern class CDrawWin;
 extern class CTask;
 extern class CFile;
@@ -62,7 +57,7 @@ extern class CFile;
 //Slash value
 #define SV_R_REG	8
 #define SV_I_REG	9
-#define SV_STI_LIKE	10 //\dLK,"uasm_slash_val",A="FF:::/Compiler/AsmInit.HC,uasm_slash_val"\d only.
+#define SV_STI_LIKE	10 //$LK,"uasm_slash_val",A="FF:::/Compiler/AsmInit.HC,uasm_slash_val"$ only.
 #define SV_NONE		11
 
 //Opcode Modifier
@@ -150,7 +145,7 @@ extern class CFile;
 whole if no member is specified,
 similar to bit fields.
 
-See \dLK,"EndianI64",A="MN:EndianI64"\d() and \dLK,"::/Demo/SubIntAccess.HC"\d.
+See $LK,"EndianI64",A="MN:EndianI64"$() and $LK,"::/Demo/SubIntAccess.HC"$.
 */
 U16i union U16
 {
@@ -243,9 +238,9 @@ public class CD3 //Three dimensional F64 pt
 extern class CCPU;
 extern class CDyadStream;
 #ifdef IMPORT_BUILTINS
-import U0 __3DaysSetVGAColor(I64i,I64i);
-import U0 __SleepHP(I64i);
-import U0 __AwakeCore(I64i);
+import U0 _GrPaletteColorSet(I64i,I64i);
+import U0 __SleepHP(U64);
+import U0 __AwakeCore(U64);
 import U0 SetVolume(F64);
 import F64 GetVolume();
 import U0 VFsFTrunc(U8i*,I64i);
@@ -254,14 +249,15 @@ import U8i *VFsFOpenW(U8i*);
 import U0 VFsFClose(U8i*);
 import Bool VFsFBlkRead(U8i*,I64i,I64i,U8i*);
 import Bool VFsFBlkWrite(U8i*,I64i,I64i,U8i*);
-import U0 VFsFSeek(I64i,U8i*);
+import Bool VFsFSeek(I64i,U8i*);
 import U0 VFsSetPwd(U8i*);
 import U0 VFsSetDrv(U8i);
-import Bool VFsExists(U8i*);
+import U8 VFsGetDrv();
+import Bool VFsFExists(U8i*);
 import Bool VFsIsDir(U8i*);
 import I64i VFsFSize(U8i*);
 import U8i *VFsFRead(U8i*,I64i*);
-import U8i *VFsDirMk(U8i*);
+import Bool VFsDirMk(U8i*);
 import U8i *VFsFWrite(U8i*,U8i*,I64i);
 import Bool VFsDel(U8i*);
 import U8i **VFsDir();
@@ -269,132 +265,131 @@ import U8i __IsValidPtr(U8i *ptr);
 import U64i UnixNow();
 import U0i InterruptCore(I64i);
 import U8i *NewVirtualChunk(I64i,I64i low32);
-import U8i *FreeVirtualChunk(U8i *,I64i sz);
+import U0 FreeVirtualChunk(U8 *,U64);
 import U0i DyadInit();
 import U0i DyadUpdate();
 import U0i DyadShutdown();
 import CDyadStream *DyadNewStream();
+import U0 DyadSetMaxConn(U64);
 import I64i DyadListen(CDyadStream *,I64i port);
 import I64i DyadConnect(CDyadStream *,U8i*,I64i port);
 import U0i DyadWrite(CDyadStream *,U8i*,I64i);
 import U0i DyadEnd(CDyadStream *);
 import U0i DyadClose(CDyadStream *);
 import U8i *DyadGetAddress(CDyadStream *);
-import U0i DyadSetReadCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
-import U0i DyadSetOnConnectCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *),U8i *);
-import U0i DyadSetOnCloseCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *),U8i *);
-import I64i mp_cnt();
+import I64 _DyadGetCallbackMode(U8 *);
+import U0i DyadSetCloseCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *),U8i *)
+import U0i DyadSetListenCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *),U8i *)
+import U0i DyadSetReadCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
+import U64 mp_cnt();
 import U0i SetFs(CTask*);
 import CTask* GetFs();
 import CCPU *GetGs();
 import U0 SetGs(CCPU *);
-import U0i ExitTOS(I32i ec=0);
-import I64i __IsCmdLine();
-import U8i __FExists(U8i *);
+import U0i ExitTINE(I32i ec=0);
+import Bool __IsCmdLine();
+import Bool __FExists(U8i *);
 import CCPU *Gs();
 import I64i __CoreNum();
-import U0i __SpawnCore(I64i core,U0i(*fp_ptr)());
+import U0i __SpawnCore(U0i(*fp_ptr)());
 import I64i FUnixTime(U8i *);
 import U8i *GetClipboardText();
-import U8i *SetClipboardText(U8i *);
-public import U8i *CAlloc(I64i size,CTask *t=0);
-public import U0i TOSPrint(U8i *,...);
-public import U8 *__GetStr(U8 *pmt="");
-import U0i SndFreq(I64i freq);
+import U0 SetClipboardText(U8i *);
+import U0i TOSPrint(U8i *,...);
+import U8 *__GetStr(U8 *pmt="");
+import U0 SndFreq(U64 freq);
 import U0 __BootstrapForeachSymbol(U8 *fptr);
-import U0i DrawWindowUpdate(U8i *,I64i);
-import I64i __GetTicks();
-import U0i __WaitForSpawn(U8i *sp);
-import U0i SetKBCallback(U8i *,U8i *);
-import U0i __Suspend(U8i *spawn);
+import U0i DrawWindowUpdate(U8i *);
+import U0 DrawWindowNew();
+import U0 PCSpkInit();
+import U64i __GetTicks();
+import U0i SetKBCallback(U8i *);
 import U0i SetMSCallback(U8i *fp);
 public import U0i __Sleep(I64i mS);
 import U8i *__CmdLineBootText();
 import U0i UnblockSignals();
-import U64i __GetTicksHP(); 
-import U8 *_BootDrv();
+import U64i __GetTicksHP();
 #else
-extern U0 __SleepHP(I64i);
-extern U64i __GetTicksHP(); 
+extern U0 _GrPaletteColorSet(I64i,I64i);
+extern U0 __SleepHP(U64);
+extern U0 __AwakeCore(U64);
+extern U64i __GetTicksHP();
 extern U8i __IsValidPtr(U8i *ptr);
 extern U64i UnixNow();
 extern U0i UnblockSignals();
 extern U0i InterruptCore(I64i);
 extern U8i *NewVirtualChunk(I64i,I64i low32);
-extern U8i *FreeVirtualChunk(U8i *,I64i sz);
+extern U0 FreeVirtualChunk(U8 *,U64);
 extern U0 VFsFTrunc(U8i*,I64i);
 extern U8i *VFsFOpenR(U8i*);
 extern U8i *VFsFOpenW(U8i*);
 extern U0 VFsFClose(U8i*);
 extern Bool VFsFBlkRead(U8i*,I64i,I64i,U8i*);
 extern Bool VFsFBlkWrite(U8i*,I64i,I64i,U8i*);
-extern U0 VFsFSeek(I64i,U8i*);
+extern Bool VFsFSeek(I64i,U8i*);
 extern U0 VFsSetPwd(U8i*);
 extern U0 VFsSetDrv(U8i);
-extern Bool VFsExists(U8i*);
+extern U8 VFsGetDrv();
+extern Bool VFsFExists(U8i*);
 extern Bool VFsIsDir(U8i*);
 extern I64i VFsFSize(U8i*);
 extern U8i *VFsFRead(U8i*,I64i*);
-extern U8i *VFsDirMk(U8i*);
+extern Bool VFsDirMk(U8i*);
 extern U8i *VFsFWrite(U8i*,U8i*,I64i);
 extern Bool VFsDel(U8i*);
 extern U8i **VFsDir();
 extern U0i DyadInit();
 extern U0i DyadUpdate();
 extern U0i DyadShutdown();
-extern U0i DyadSetReadCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
-extern U0i DyadSetOnConnectCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *),U8i *);
-extern U0i DyadSetOnCloseCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *),U8i *);
-extern U0 DyadSetOnReadyCallback(CDyadStream *,U8i(*)(CDyadStream*,U8i*),U8i*);
-extern U0 DyadSetOnTimeoutCallback(CDyadStream *,U8i(*)(CDyadStream*,U8i*),U8i*);
-extern U0 DyadSetOnTickCallback(CDyadStream *,U8i(*)(CDyadStream*,U8i*),U8i*);
-extern U0 DyadSetOnErrorCallback(CDyadStream *,U8i(*)(CDyadStream*,U8i*),U8i*);
-extern U0 DyadSetOnDestroyCallback(CDyadStream *,U8i(*)(CDyadStream*,U8i*),U8i*);
+extern I64 _DyadGetCallbackMode(U8 *);
+extern U0i DyadSetCloseCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *),U8i *)
+extern U0i DyadSetListenCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *),U8i *)
+extern U0i DyadSetReadCallback(CDyadStream *,I64,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
 extern U0 DyadSetTimeout(CDyadStream *,F64);
 extern U0 DyadSetNoDelay(CDyadStream *,I64i);
 extern CDyadStream *DyadNewStream();
+extern U0 DyadSetMaxConn(U64);
 extern I64i DyadListen(CDyadStream *,I64i port);
 extern I64i DyadConnect(CDyadStream *,U8i*,I64i port);
 extern U0i DyadWrite(CDyadStream *,U8i*,I64i);
 extern U0i DyadEnd(CDyadStream *);
 extern U0i DyadClose(CDyadStream *);
 extern U8i *DyadGetAddress(CDyadStream *);
-extern U0i DyadSetReadCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
-extern U0i DyadSetOnListenCallback(CDyadStream *,U0i(*fptr)(CDyadStream *,U8i *,I64i,U8i *),U8i *);
-extern I64i mp_cnt();
+extern U64 mp_cnt();
 extern U0i SetFs(CTask*);
 extern CTask* GetFs();
 extern CCPU *GetGs();
+extern U0 SetGs(CCPU *);
 extern U8i *__CmdLineBootText();
-extern U0i ExitTOS(I32i ec=0);
-extern I64i __IsCmdLine();
-extern U8i __FExists(U8i *);
+extern U0i ExitTINE(I32i ec=0);
+extern Bool __IsCmdLine();
+extern Bool __FExists(U8i *);
 extern CCPU *Gs();
 extern I64i __CoreNum();
-extern U0i __SpawnCore(I64i core,U0i(*fp_ptr)());
+extern U0i __SpawnCore(U0i(*fp_ptr)());
 extern I64i FUnixTime(U8i *);
 extern U8i *GetClipboardText();
-extern U8i *SetClipboardText(U8i *);
-public extern U8i *CAlloc(I64i size,CTask *t=0);
-public extern U0i TOSPrint(U8i *,...);
-public extern U0 Exit();
-public extern U8 *__GetStr(U8 *pmt="");
+extern U0 SetClipboardText(U8i *);
+extern U0i TOSPrint(U8i *,...);
+extern U8 *__GetStr(U8 *pmt="");
 extern U0 __BootstrapForeachSymbol(U8 *fptr);
-extern U0i DrawWindowUpdate(U8i *,I64i);
-extern I64i __GetTicks();
-extern U0i SetKBCallback(U8i *,U8i *);;
+extern U0i DrawWindowUpdate(U8i *);
+extern U0 DrawWindowNew();
+extern U0 PCSpkInit();
+extern U64i __GetTicks();
+extern U0i SetKBCallback(U8i *);
 extern U0i SetMSCallback(U8i *fp);
 public extern U0i __Sleep(I64i mS);
-extern U0i SndFreq(I64i freq);
-public extern Bool FBlkRead(CFile *f,U8i *buf,I64i blk=FFB_NEXT_BLK,I64i cnt=1);
-public extern Bool FBlkWrite(CFile *f,U8i *buf,I64i blk=FFB_NEXT_BLK,I64i cnt=1);
+extern U0 SndFreq(U64 freq);
+public extern Bool FBlkRead(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1);
+public extern Bool FBlkWrite(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1);
 public extern U0 FClose(CFile *f);
 public extern U8i *FOpen(U8i *filename,U8i *flags,I64i cnt=0,U8i *mem_task=0);
-extern U8 *_BootDrv();
 #endif
+
+public extern U0 Exit();
 public extern I64 MSize(U8 *src);   //size of heap object
 public extern I64 MSize2(U8 *src); //Internal size
-extern U0i Exit();
 extern class CAOT;
 extern class CAOTHeapGlbl;
 extern class CAOTImportExport;
@@ -433,7 +428,7 @@ extern class CJobCtrl;
 #define STR_LEN 144
 
 //(Int to F64 conversion is signed)
-//Turn off 80-bit float constants with \dLK,"OPTf_NO_BUILTIN_CONST",A="MN:OPTf_NO_BUILTIN_CONST"\d.
+//Turn off 80-bit float constants with $LK,"OPTf_NO_BUILTIN_CONST",A="MN:OPTf_NO_BUILTIN_CONST"$.
 #define U64_F64_MAX (0x43F0000000000000(F64))
 #define F64_MAX (0x7FEFFFFFFFFFFFFF(F64))
 #define F64_MIN (0xFFEFFFFFFFFFFFFF(F64))
@@ -494,8 +489,8 @@ public class COrder2D3
 public class CMass
 {
   CMass	*next,*last;
-  COrder2D3 *state, //Point to entries in \dLK,"CMathODE",A="MN:CMathODE"\d.state[]
-	*DstateDt;  //Point to entries in \dLK,"CMathODE",A="MN:CMathODE"\d.DstateDt[]
+  COrder2D3 *state, //Point to entries in $LK,"CMathODE",A="MN:CMathODE"$.state[]
+	*DstateDt;  //Point to entries in $LK,"CMathODE",A="MN:CMathODE"$.DstateDt[]
 
   U0	start;
   U32	flags,num;
@@ -590,7 +585,7 @@ public class CMathODE
 #define I_MP_CRASH		0x30
 #define I_WAKE			0x31
 #define I_DBG			0x32
-//See \dLK,"ST_INT_NAMES",A="MN:ST_INT_NAMES"\d
+//See $LK,"ST_INT_NAMES",A="MN:ST_INT_NAMES"$
 
 //You might want to start bwd from
 //0xFF for your own interrupts.
@@ -634,8 +629,8 @@ class CGDT
   CGDTEntry boot_ds;
   CGDTEntry boot_cs;
   CGDTEntry cs32;
-  CGDTEntry cs64;	//The \dLK,"Charter",A="FI:::/Doc/Charter.DD"\d says just ring-0.
-  CGDTEntry cs64_ring3;	//\dLK,"Ring3",A="FI:::/Demo/Lectures/Ring3.HC"\d, in case you want to play around.
+  CGDTEntry cs64;	//The $LK,"Charter",A="FI:::/Doc/Charter.DD"$ says just ring-0.
+  CGDTEntry cs64_ring3;	//$LK,"Ring3",A="FI:::/Demo/Lectures/Ring3.HC"$, in case you want to play around.
   CGDTEntry ds;
   CGDTEntry ds_ring3;
   CGDTEntry tr[MP_PROCESSORS_NUM];
@@ -663,25 +658,25 @@ class CMemE820
 
 #define BIN_SIGNATURE_VAL	'TOSB'
 class CBinFile
-{//\dLK,"Bin File Header Generation",A="FF:::/Compiler/CMain.HC,16 ALIGN"\d by compiler.
+{//$LK,"Bin File Header Generation",A="FF:::/Compiler/CMain.HC,16 ALIGN"$ by compiler.
   U16	jmp;
   U8	module_align_bits,
 	reserved;
   U32	bin_signature;
   I64	org,
-	patch_table_offset, //\dLK,"Patch Table Generation",A="FF:::/Compiler/CMain.HC,IET_ABS_ADDR"\d
+	patch_table_offset, //$LK,"Patch Table Generation",A="FF:::/Compiler/CMain.HC,IET_ABS_ADDR"$
 	file_size;
 };
 
 class CPatchTableAbsAddr
 {
-  U8	eit_abs_addr;	//\dLK,"IET_ABS_ADDR",A="MN:IET_ABS_ADDR"\d
+  U8	eit_abs_addr;	//$LK,"IET_ABS_ADDR",A="MN:IET_ABS_ADDR"$
   U32	abs_addres_cnt;
   U8	zero;
   U32	abs_addres[1];
 };
 
-//\dLK,"CAOTImportExport",A="MN:CAOTImportExport"\d Types. Used in PatchTable.
+//$LK,"CAOTImportExport",A="MN:CAOTImportExport"$ Types. Used in PatchTable.
 #define IET_END			0
 //reserved
 #define IET_REL_I0		2 //Fictitious
@@ -708,7 +703,7 @@ class CPatchTableAbsAddr
 #define IET_MAIN		25
 
 class CKernel
-{//Must match \dLK,"OSStartUp",A="FF:::/Kernel/KStart16.HC,MEM_BOOT_BASE"\d
+{//Must match $LK,"OSStartUp",A="FF:::/Kernel/KStart16.HC,MEM_BOOT_BASE"$
   CBinFile h;
   U32	jmp,
 	boot_src,
@@ -834,8 +829,8 @@ class CAP16BitInit
 
 public class CCntsGlbls
 {
-  I64	jiffies,	//\dLK,"JIFFY_FREQ",A="MN:JIFFY_FREQ"\d
-	timer,		//\dLK,"SYS_TIMER_FREQ",A="MN:SYS_TIMER_FREQ"\d. Use \dLK,"SysTimerRead",A="MN:SysTimerRead"\d().
+  I64	jiffies,	//$LK,"JIFFY_FREQ",A="MN:JIFFY_FREQ"$
+	timer,		//$LK,"SYS_TIMER_FREQ",A="MN:SYS_TIMER_FREQ"$. Use $LK,"SysTimerRead",A="MN:SysTimerRead"$().
 	time_stamp_freq,
 	time_stamp_kHz_freq,
 	time_stamp_freq_initial, //Initial freq, sampled once at boot time.
@@ -868,7 +863,7 @@ class CRAXRBCRCXRDX
 };
 
 //Asm callable function pointers.
-//They work with \dLK,"CallExtNum",A="MN:CallExtNum"\d() when calling from HolyC.
+//They work with $LK,"CallExtNum",A="MN:CallExtNum"$() when calling from HolyC.
 #define EXT_WIN_TO_TOP		0
 #define EXT_WIN_FOCUS		1
 #define EXT_HEAPLOG_MALLOC	2
@@ -912,7 +907,7 @@ class CSema
 #define CTRL_ALT_TAB		3
 
 public class CHash
-{//See \dLK,"Hash",A="HI:Hash"\d
+{//See $LK,"Hash",A="HI:Hash"$
   CHash	*next;
   U8	*str;
   U32	type,
@@ -926,7 +921,7 @@ public class CHashTable
   CHash	**body;
 };
 
-//Hash table types: \dLK,"ST_HTT_TYPES",A="FF:::/Kernel/KDefine.HC,ST_HTT_TYPES"\d
+//Hash table types: $LK,"ST_HTT_TYPES",A="FF:::/Kernel/KDefine.HC,ST_HTT_TYPES"$
 #define HTt_EXPORT_SYS_SYM	0
 #define HTt_IMPORT_SYS_SYM	1
 #define HTt_DEFINE_STR		2
@@ -966,8 +961,8 @@ public class CHashTable
 #define HTT_FUN			0x00040 //CHashFun
 #define HTT_WORD		0x00080 //CHashAC only in AutoComplete table
 #define HTT_DICT_WORD		0x00100 //CHashGeneric only in AutoComplete tbl
-#define HTT_KEYWORD		0x00200 //CHashGeneric \dLK,"KEYWORD",A="FF:::/Compiler/OpCodes.DD,KEYWORD"\d
-#define HTT_ASM_KEYWORD		0x00400 //CHashGeneric \dLK,"ASM_KEYWORD",A="FF:::/Compiler/OpCodes.DD,ASM_KEYWORD"\d
+#define HTT_KEYWORD		0x00200 //CHashGeneric $LK,"KEYWORD",A="FF:::/Compiler/OpCodes.DD,KEYWORD"$
+#define HTT_ASM_KEYWORD		0x00400 //CHashGeneric $LK,"ASM_KEYWORD",A="FF:::/Compiler/OpCodes.DD,ASM_KEYWORD"$
 #define HTT_OPCODE		0x00800 //CHashOpcode
 #define HTT_REG			0x01000 //CHashReg
 #define HTT_FILE		0x02000 //CHashGeneric
@@ -1108,7 +1103,7 @@ public class CHashDefineStr:CHashSrcSym
 #define Cf_INTERNAL_TYPE	1
 
 public class CHashClass:CHashSrcSym
-{//See \dLK,"PrsClassNew",A="MN:PrsClassNew"\d(). base_class of \dLK,"CHashFun",A="MN:CHashFun"\d
+{//See $LK,"PrsClassNew",A="MN:PrsClassNew"$(). base_class of $LK,"CHashFun",A="MN:CHashFun"$
   I64	size,neg_offset;
   U32	member_cnt;
   U8	ptr_stars_cnt,raw_type;
@@ -1131,7 +1126,7 @@ public class CHashClass:CHashSrcSym
 #define Ff_RET1			15
 
 public class CHashFun:CHashClass
-{//See \dLK,"PrsFunNew",A="MN:PrsFunNew"\d().
+{//See $LK,"PrsFunNew",A="MN:PrsFunNew"$().
   CHashClass *return_class;
   U32	arg_cnt,pad,
 	used_reg_mask,clobbered_reg_mask;
@@ -1160,7 +1155,7 @@ public class CHashGlblVar:CHashSrcSym
   };
 };
 
-//See \dLK,"TextBase Layer",A="HI:TextBase Layer"\d.
+//See $LK,"TextBase Layer",A="HI:TextBase Layer"$.
 #define ATTRF_BLINK	0x10000000
 #define ATTRF_INVERT	0x20000000
 #define ATTRF_SEL	0x40000000
@@ -1300,7 +1295,7 @@ public class CHashGlblVar:CHashSrcSym
 #define DOCEF_CHECK_COLLAPSABLE 0x100000000000
 #define DOCEF_REFRESH_DATA	0x200000000000
 #define DOCEF_UPDATE_DATA	0x400000000000
-//\dLK,"DOCEF_DEREF_DATA",A="MN:DOCEF_DEREF_DATA"\d is confusing. \dLK,"DocForm",A="MN:DocForm"\d() makes doc_e->data point to members
+//$LK,"DOCEF_DEREF_DATA",A="MN:DOCEF_DEREF_DATA"$ is confusing. $LK,"DocForm",A="MN:DocForm"$() makes doc_e->data point to members
 //of class. For ints, it derefs doc_e->data as a ptr.  For strings, it doesn't.
 #define DOCEF_DEREF_DATA	0x800000000000
 #define DOCEF_REMALLOC_DATA	0x1000000000000
@@ -1501,14 +1496,14 @@ public class CDocEntry:CDocEntryBase
 	*my_fmt_data;
   I64	hex_ed_width;
   I32	scroll_len,
-	len, //\dLK,"DOCE_LEN_DFT",A="MN:DOCE_LEN_DFT"\d
+	len, //$LK,"DOCE_LEN_DFT",A="MN:DOCE_LEN_DFT"$
 	bin_num;
   U8	raw_type,pad[3];
   CDocBin *bin_data;
   U8	*data;
 };
 
-//\dLK,"DocForm",A="MN:DocForm"\d() \dLK,"DocMenu",A="MN:DocMenu"\d() \dLK,"DocEd",A="MN:DocEd"\d() \dLK,"PopUpMenu",A="MN:PopUpMenu"\d()
+//$LK,"DocForm",A="MN:DocForm"$() $LK,"DocMenu",A="MN:DocMenu"$() $LK,"DocEd",A="MN:DocEd"$() $LK,"PopUpMenu",A="MN:PopUpMenu"$()
 #define	DOF_SIZE_MIN		0x01
 #define	DOF_INTERCEPT_TASK_END	0x02
 #define DOF_DONT_HOME		0x04
@@ -1516,7 +1511,7 @@ public class CDocEntry:CDocEntryBase
 #define DOF_DONT_TEXT_ATTR	0x10
 #define DOF_DONT_WINMGR_SYNC	0x20
 #define DOF_DONT_SHOW		0x40
-//Combines with  \dLK,"Editor Flags",A="MN:EDF_BAIL"\d
+//Combines with  $LK,"Editor Flags",A="MN:EDF_BAIL"$
 
 class CEdFindText
 {
@@ -1540,12 +1535,12 @@ class CEdFileName
   U8	name[256] format "\dDA-P,LEN=255,A=\"FileName:%s\"\d";
 };
 
-//\dLK,"Ed",A="MN:Ed"\d()
+//$LK,"Ed",A="MN:Ed"$()
 #define EDF_BAIL		0x100
 #define EDF_COLLAPSE		0x200
 #define EDF_UNCOLLAPSE		0x400
 #define EDF_WAS_WRITE		0x800 //Was exit ESC or SHIFT_ESC?
-//Combines with \dLK,"Document Flags",A="MN:DOF_SIZE_MIN"\d
+//Combines with $LK,"Document Flags",A="MN:DOF_SIZE_MIN"$
 
 #define EDf_BAIL		8
 #define EDf_COLLAPSE		9
@@ -1564,9 +1559,9 @@ class CEdFileName
 #define DOCF_BORDER_DOC		0x100
 #define DOCF_FORM		0x200
 #define DOCF_SIZE_MIN		0x400
-#define DOCF_HIDE_CURSOR	0x800  //use \dLK,"DocCursor",A="MN:DocCursor"\d
-#define DOCF_DONT_HIGHLIGHT_CURSOR 0x1000 //use \dLK,"DocHighlightCursor",A="MN:DocHighlightCursor"\d
-#define DOCF_NO_SCROLL_BARS	0x2000 //use \dLK,"DocScroll",A="MN:DocScroll"\d
+#define DOCF_HIDE_CURSOR	0x800  //use $LK,"DocCursor",A="MN:DocCursor"$
+#define DOCF_DONT_HIGHLIGHT_CURSOR 0x1000 //use $LK,"DocHighlightCursor",A="MN:DocHighlightCursor"$
+#define DOCF_NO_SCROLL_BARS	0x2000 //use $LK,"DocScroll",A="MN:DocScroll"$
 #define DOCF_ALLOW_UNDO		0x4000
 #define DOCF_DONT_SHOW		0x8000
 #define DOCF_HAS_SONG		0x10000
@@ -1601,9 +1596,9 @@ class CEdFileName
 #define DOCf_BORDER_DOC		8
 #define DOCf_FORM		9
 #define DOCf_SIZE_MIN		10
-#define DOCf_HIDE_CURSOR	11  //use \dLK,"DocCursor",A="MN:DocCursor"\d
-#define DOCf_DONT_HIGHLIGHT_CURSOR 12  //use \dLK,"DocHighlightCursor",A="MN:DocHighlightCursor"\d
-#define DOCf_NO_SCROLL_BARS	13  //use \dLK,"DocScroll",A="MN:DocScroll"\d
+#define DOCf_HIDE_CURSOR	11  //use $LK,"DocCursor",A="MN:DocCursor"$
+#define DOCf_DONT_HIGHLIGHT_CURSOR 12  //use $LK,"DocHighlightCursor",A="MN:DocHighlightCursor"$
+#define DOCf_NO_SCROLL_BARS	13  //use $LK,"DocScroll",A="MN:DocScroll"$
 #define DOCf_ALLOW_UNDO		14
 #define DOCf_DONT_SHOW		15
 #define DOCf_HAS_SONG		16
@@ -1637,7 +1632,7 @@ class CDocUndo
   U8	*body;
 };
 
-//See \dLK,"DocMenu",A="MN:DocMenu"\d()
+//See $LK,"DocMenu",A="MN:DocMenu"$()
 #define DOCM_CANCEL		(-1)
 
 #define DOC_SIGNATURE_VAL	'DocS'
@@ -1652,7 +1647,7 @@ class CDocUndo
 #define RECALCF_TO_HTML		0x400
 
 public class CDoc //Linked Text File header
-{//See \dLK,"Doc",A="HI:Doc"\d for documentation.
+{//See $LK,"Doc",A="HI:Doc"$ for documentation.
   CDocEntryBase head;
   I64	flags,locked_flags;
   CDocEntry *cur_entry,*old_cur_entry;
@@ -1678,13 +1673,13 @@ public class CDoc //Linked Text File header
   I64	(*left_click_link)(CDoc *doc,CDocEntry *doc_e);
   I64	(*right_click_link)(CDoc *doc,CDocEntry *doc_e);
 
-  //See \dLK,"::/Apps/Psalmody/JukeBox.HC"\d
+  //See $LK,"::/Apps/Psalmody/JukeBox.HC"$
   U8	*user_put_data; //Passed to user_put_key() and user_put_s()
   Bool	(*user_put_key)(CDoc *doc,U8 *data,I64 ch,I64 sc);
   Bool	(*user_put_s)(CDoc *doc,U8 *data,U8 *st);
 
   CDoc	*parent_doc; //(When browsing deeper, opening deeper docs.)
-  U64	desc; //8 characters. See \dLK,"DocBorderLstDraw",A="MN:DocBorderLstDraw"\d().
+  U64	desc; //8 characters. See $LK,"DocBorderLstDraw",A="MN:DocBorderLstDraw"$().
 
   CDocBin bin_head;
   CDocSettings settings_head;
@@ -1821,7 +1816,7 @@ public class CAutoCompleteDictGlbls
   Bool	has_words,has_defs;
 };
 
-//Compiler \dLK,"Option",A="MN:Option"\d()s
+//Compiler $LK,"Option",A="MN:Option"$()s
 //You might need to do #exe {Option();}
 //Note: The #exe stmt is lexed-ahead,
 //so it takes effect earlier than you might expect.
@@ -1841,7 +1836,7 @@ public class CAutoCompleteDictGlbls
 
 #define OPTF_ECHO		(1<<OPTf_ECHO)
 extern CAutoCompleteGlbls ac;
-//See \dLK,"ST_RAW_TYPES",A="MN:ST_RAW_TYPES"\d
+//See $LK,"ST_RAW_TYPES",A="MN:ST_RAW_TYPES"$
 #define RT_I0		2
 #define RT_U0		3
 #define RT_I8		4
@@ -1851,7 +1846,7 @@ extern CAutoCompleteGlbls ac;
 #define RT_I32		8
 #define RT_U32		9
 #define RT_I64		10
-#define RT_PTR		10 //Signed to allow negative err codes. \dLK,"DOCM_CANCEL",A="MN:DOCM_CANCEL"\d
+#define RT_PTR		10 //Signed to allow negative err codes. $LK,"DOCM_CANCEL",A="MN:DOCM_CANCEL"$
 #define RT_U64		11
 #define RT_F32		12 //Not implemented
 #define RT_UF32		13 //Not implemented, Fictitious
@@ -1934,7 +1929,7 @@ class CICTreeLinks
   CIntermediateCode *arg1_tree,*arg2_tree;
   CHashClass *class2;
 };
-extern class CCmpCtrl; 
+extern class CCmpCtrl;
 class CIntermediateCodeBase
 {
   CIntermediateCode *next,*last;
@@ -1952,7 +1947,7 @@ class CIntermediateCode:CIntermediateCodeBase
 	ic_line;
   CHashClass *ic_class,*ic_class2;
   CICArg arg1,arg2,res;
-  U8	arg1_type_pointed_to; //Used for \dLK,"IST_ASSIGN",A="MN:IST_ASSIGN"\d and \dLK,"IST_DEREF",A="MN:IST_DEREF"\d \dLK,"ic_codes",A="MN:intermediate_code_table"\d.
+  U8	arg1_type_pointed_to; //Used for $LK,"IST_ASSIGN",A="MN:IST_ASSIGN"$ and $LK,"IST_DEREF",A="MN:IST_DEREF"$ $LK,"ic_codes",A="MN:intermediate_code_table"$.
   union {
     U8 ic_body[IC_BODY_SIZE];
     //Tree Links are created in OptPass012.  An ADD opcode, for example,
@@ -2029,7 +2024,7 @@ class CCodeMisc
 //Slash value
 #define SV_R_REG	8
 #define SV_I_REG	9
-#define SV_STI_LIKE	10 //\dLK,"uasm_slash_val",A="FF:::/Compiler/AsmInit.HC,uasm_slash_val"\d only.
+#define SV_STI_LIKE	10 //$LK,"uasm_slash_val",A="FF:::/Compiler/AsmInit.HC,uasm_slash_val"$ only.
 #define SV_NONE		11
 class CInst
 {
@@ -2101,7 +2096,7 @@ I64 class CAbsCntsI64
 };
 
 class CAsmUndefHash
-{//Only place created is \dLK,"Exp Parser",A="FF:::/Compiler/PrsExp.HC,sizeof(CAsmUndefHash)"\d when an undef is found in an ASM exp.
+{//Only place created is $LK,"Exp Parser",A="FF:::/Compiler/PrsExp.HC,sizeof(CAsmUndefHash)"$ when an undef is found in an ASM exp.
   CAsmUndefHash	*next;
   CHashExport	*hash;
 };
@@ -2537,7 +2532,7 @@ public class CATARep
   I64	num,type,base0,base1,unit,irq;
 };
 
-//See \dLK,"::/Doc/Credits.DD"\d.
+//See $LK,"::/Doc/Credits.DD"$.
 #define ATA_NOP			0x00
 #define ATA_DEV_RST		0x08
 #define ATA_PACKET		0xA0
@@ -2763,7 +2758,7 @@ class CISOPriDesc
 };
 
 //Red Sea Attributes
-//See \dLK,"ST_FILE_ATTRS",A="MN:ST_FILE_ATTRS"\d
+//See $LK,"ST_FILE_ATTRS",A="MN:ST_FILE_ATTRS"$
 #define RS_ATTR_READ_ONLY	0x01 //R
 #define RS_ATTR_HIDDEN		0x02 //H
 #define RS_ATTR_SYSTEM		0x04 //S
@@ -2779,11 +2774,11 @@ class CISOPriDesc
 #define RS_ATTR_CONTIGUOUS	0x800 //C
 #define RS_ATTR_FIXED		0x1000 //F
 
-//Media types for \dLK,"DVDImageWrite",A="MN:DVDImageWrite"\d()
+//Media types for $LK,"DVDImageWrite",A="MN:DVDImageWrite"$()
 #define MT_CD		1
 #define MT_DVD		2
 
-//CDirEntry flags (Used by \dLK,"FileMgr",A="MN:FileMgr"\d())
+//CDirEntry flags (Used by $LK,"FileMgr",A="MN:FileMgr"$())
 //DO NOT CHANGE
 #define CDIR_FILENAME_LEN	38 //Must include terminator zero
 public class CDirEntry
@@ -2801,7 +2796,7 @@ public class CDirEntry
 #define CDIR_SIZE (sizeof(CDirEntry)-offset(CDirEntry.start))
 
 //File Util Flags
-//See \dLK,"ST_FILE_UTIL_FLAGS",A="MN:ST_FILE_UTIL_FLAGS"\d
+//See $LK,"ST_FILE_UTIL_FLAGS",A="MN:ST_FILE_UTIL_FLAGS"$
 #define FUf_RECURSE		0
 #define FUf_DIFF		1
 #define FUf_DEL			1
@@ -2864,7 +2859,7 @@ public class CDirEntry
 #define FUG_FILE_FIND	(FUF_JUST_DIRS|FUF_JUST_FILES|FUF_Z_OR_NOT_Z|\
   FUF_SCAN_PARENTS)
 
-//See \dLK,"ST_BLKDEV_TYPES",A="MN:ST_BLKDEV_TYPES"\d
+//See $LK,"ST_BLKDEV_TYPES",A="MN:ST_BLKDEV_TYPES"$
 #define BDT_NULL		0
 #define BDT_RAM			1
 #define BDT_ATA			2
@@ -2922,7 +2917,7 @@ public class CBlkDev
 //Drive locked_flags
 #define DVlf_LOCKED	0
 
-//See \dLK,"ST_DRV_TYPES",A="MN:ST_DRV_TYPES"\d
+//See $LK,"ST_DRV_TYPES",A="MN:ST_DRV_TYPES"$
 #define FSt_NULL	0
 #define FSt_REDSEA	1 //Supported
 #define FSt_FAT32	2 //Supported except for short names, to some degree
@@ -2954,10 +2949,10 @@ class CFreeLst
 #define DRVS_NUM		26
 
 #define DRV_SIGNATURE_VAL	'DVSV'
-public class CDrv
+public class CDrv
 {
 //Don't access ->drv_let directly in case a drive has been remapped.
-  //Use \dLK,"Drv2Let",A="MN:Drv2Let"\d().
+  //Use $LK,"Drv2Let",A="MN:Drv2Let"$().
   I64	locked_flags;
   U32	dv_signature;
   U8	drv_let,pad;
@@ -2998,8 +2993,8 @@ class CCacheBlk
 public class CBlkDevGlbls
 {
   CBlkDev *blkdevs;
-  U8	*dft_iso_filename;	//\dTX,"\"::/Tmp/CDDVD.ISO\"",D="DFT_ISO_FILENAME"\d
-  U8	*dft_iso_c_filename;	//\dTX,"\"::/Tmp/CDDVD.ISO.C\"",D="DFT_ISO_C_FILENAME"\d
+  U8	*dft_iso_filename;	//$TX,"\"::/Tmp/CDDVD.ISO\"",D="DFT_ISO_FILENAME"$
+  U8	*dft_iso_c_filename;	//$TX,"\"::/Tmp/CDDVD.ISO.C\"",D="DFT_ISO_C_FILENAME"$
   U8	*tmp_filename;
   U8	*home_dir;
   CCacheBlk *cache_base,*cache_ctrl,**cache_hash_table;
@@ -3026,14 +3021,14 @@ public class CDirContext
 #define FF_CONTIGUOUS		16
 #define FF_USE_OLD_DATETIME	32
 
-public class CFile //See \dLK,"::/Demo/Dsk/DataBase.HC"\d.
+public class CFile //See $LK,"::/Demo/Dsk/DataBase.HC"$.
 {
   I64	flags;
   CDirEntry de;
   CDrv	*dv;
   I64	fblk_num,clus,file_clus_num,max_blk;
   U8	*clus_buf;
-  U8	*_file_virt; //points to FILE * from C
+  U8	*_file_virt; //points to FILE * from C, changed for TINE
 };
 
 #define _CFG_HEAP_DBG FALSE
@@ -3102,7 +3097,7 @@ class CMemRange
 #define MEM_PAG_SIZE		(1<<MEM_PAG_BITS)
 #define MEM_HEAP_HASH_SIZE	1024
 #define MEM_FREE_PAG_HASH_SIZE	0x100
-//It is common to \dLK,"MAlloc",A="MN:MAlloc"\d() exact powers of two.  There is some overhead.
+//It is common to $LK,"MAlloc",A="MN:MAlloc"$() exact powers of two.  There is some overhead.
 //We add 2 pags, so a request is not rounded-up to next power of two.
 #define MEM_EXTRA_HASH2_PAGS	2
 
@@ -3166,8 +3161,8 @@ public class CDevGlbls
 #define ROP_COLLISION			(ROPB_COLLISION<<8)
 #define ROP_MONO			(ROPB_MONO<<8)
 
-//These are just for \dLK,"ROPF_PROBABILITY_DITHER",A="MN:ROPF_PROBABILITY_DITHER"\d
-//See \dLK,"DCLighting",A="MN:DCLighting"\d().
+//These are just for $LK,"ROPF_PROBABILITY_DITHER",A="MN:ROPF_PROBABILITY_DITHER"$
+//See $LK,"DCLighting",A="MN:DCLighting"$().
 #define ROPF_HALF_RANGE_COLOR		0x1000
 #define ROPF_TWO_SIDED			0x2000
 
@@ -3204,7 +3199,7 @@ public I64 class CBGR48
 #define KBD_CTRL	0x64
 public class CKbdStateGlbls
 {
-  I64	scan_code,	//See \dLK,"scan codes",A="FI:::/Doc/CharOverview.DD"\d
+  I64	scan_code,	//See $LK,"scan codes",A="FI:::/Doc/CharOverview.DD"$
 	last_down_scan_code,
 	cnt,		//Count of keys pressed since boot.
 	timestamp,	//Output: GetTSC when event.
@@ -3212,10 +3207,10 @@ public class CKbdStateGlbls
   CFifoU8 *fifo,*fifo2; //Private
   CFifoI64 *scan_code_fifo;
 
-  //BitTest, \dLK,"Bt",A="MN:Bt"\d(), with a merged scan code.
+  //BitTest, $LK,"Bt",A="MN:Bt"$(), with a merged scan code.
   //(Left and right shift merged, for example.)
   U32	down_bitmap[8],
-//BitTest, \dLK,"Bt",A="MN:Bt"\d(), with an unmerged scan code.
+//BitTest, $LK,"Bt",A="MN:Bt"$(), with an unmerged scan code.
 	down_bitmap2[8];
 
   Bool	rst,		//Private: Reset KbdMs
@@ -3354,7 +3349,7 @@ class CBpt
   CBpt	*next;
   U8	*addr,
 	val,
-	is_tmp, //Changed in tos
+	is_tmp, //Changed in TINE
 	pad[6];
 };
 
@@ -3381,12 +3376,12 @@ class CFPU
 #define JOBf_FREE_ON_COMPLETE	7
 #define JOBf_ADD_TO_QUE		8
 
-#define JOBT_TEXT_INPUT		0 //\dLK,"TaskText",A="MN:TaskText"\d()	Feed StdIn
-#define JOBT_MSG		1 //\dLK,"TaskMsg",A="MN:TaskMsg"\d()	Post msg
-#define JOBT_EXE_STR		2 //\dLK,"TaskExe",A="MN:TaskExe"\d()	Compile & execute src code text
+#define JOBT_TEXT_INPUT		0 //$LK,"TaskText",A="MN:TaskText"$()	Feed StdIn
+#define JOBT_MSG		1 //$LK,"TaskMsg",A="MN:TaskMsg"$()	Post msg
+#define JOBT_EXE_STR		2 //$LK,"TaskExe",A="MN:TaskExe"$()	Compile & execute src code text
 //MP cmds
-#define JOBT_CALL		3 //\dLK,"JobQue",A="MN:JobQue"\d()	Tell MP to call function
-#define JOBT_SPAWN_TASK		4 //\dLK,"Spawn",A="MN:Spawn"\d()	Tell MP to spawn task
+#define JOBT_CALL		3 //$LK,"JobQue",A="MN:JobQue"$()	Tell MP to call function
+#define JOBT_SPAWN_TASK		4 //$LK,"Spawn",A="MN:Spawn"$()	Tell MP to spawn task
 
 class CJob
 {
@@ -3413,11 +3408,11 @@ class CJobCtrl
   I64	flags;
 };
 
-//See \dLK,"::/Demo/MsgLoop.HC"\d
+//See $LK,"::/Demo/MsgLoop.HC"$
 #define MSG_NULL		0
 #define MSG_CMD			1
-#define MSG_KEY_DOWN		2  //(\dLK,"ASCII",A="MN:CH_CTRLA"\d,\dLK,"scan code",A="FI:::/Doc/CharOverview.DD"\d) Press <CTRL-SHIFT-L>
-#define MSG_KEY_UP		3  //(\dLK,"ASCII",A="MN:CH_CTRLA"\d,\dLK,"scan code",A="FI:::/Doc/CharOverview.DD"\d) Press <CTRL-SHIFT-L>
+#define MSG_KEY_DOWN		2  //($LK,"ASCII",A="MN:CH_CTRLA"$,$LK,"scan code",A="FI:::/Doc/CharOverview.DD"$) Press <CTRL-SHIFT-L>
+#define MSG_KEY_UP		3  //($LK,"ASCII",A="MN:CH_CTRLA"$,$LK,"scan code",A="FI:::/Doc/CharOverview.DD"$) Press <CTRL-SHIFT-L>
 #define MSG_MS_MOVE		4  //(x,y)
 #define MSG_MS_L_DOWN		5  //(x,y)
 #define MSG_MS_L_UP		6  //(x,y)
@@ -3482,7 +3477,7 @@ public class CTaskSettings
 #define TASKf_KILL_AFTER_DBG	13
 
 #define TASKf_NONTIMER_RAND	14
-//Added in tos 
+//Added in TINE
 #define TASKf_JUST_STEPPED 15
 
 //CTask.display_flags
@@ -3539,7 +3534,7 @@ public class CTask //The Fs segment reg points to current CTask.
 	scroll_x,scroll_y,scroll_z;
 
   //These must be in this order
-  //for \dLK,"TASK_CONTEXT_SAVE",A="FF:::/Kernel/Sched.HC,TASK_CONTEXT_SAVE"\d and \dLK,"_TASK_CONTEXT_RESTORE",A="FF:::/Kernel/Sched.HC,_TASK_CONTEXT_RESTORE"\d
+  //for $LK,"TASK_CONTEXT_SAVE",A="FF:::/Kernel/Sched.HC,TASK_CONTEXT_SAVE"$ and $LK,"_TASK_CONTEXT_RESTORE",A="FF:::/Kernel/Sched.HC,_TASK_CONTEXT_RESTORE"$
   I64	rip,rflags,rsp,rsi,rax,rcx,rdx,rbx,rbp,rdi,
 	r8,r9,r10,r11,r12,r13,r14,r15;
   CCPU	*gs;
@@ -3728,7 +3723,7 @@ extern CSysFixedArea sys_fixed_area, *SYS_FIXED_AREA;
 
 //TempleOS places a 1 in bit 7 for
 //keys with an E0 prefix.
-//See \dLK,"::/Doc/CharOverview.DD"\d and \dLK,"KbdHndlr",A="MN:KbdHndlr"\d().
+//See $LK,"::/Doc/CharOverview.DD"$ and $LK,"KbdHndlr",A="MN:KbdHndlr"$().
 #define SC_ESC		0x01
 #define SC_BACKSPACE	0x0E
 #define SC_TAB		0x0F
@@ -3796,15 +3791,15 @@ public class CTextGlbls
 //Low 8 bits reserved for flags that go into saved bitmaps
 #define DCF_COMPRESSED		1
 #define DCF_PALETTE		2
-#define DCF_NO_TRANSPARENTS	4 //Can be used to optimized \dLK,"GrBlot",A="MN:GrBlot"\d().
+#define DCF_NO_TRANSPARENTS	4 //Can be used to optimized $LK,"GrBlot",A="MN:GrBlot"$().
 
 #define DCF_TRANSFORMATION	0x100
 
-//See \dLK,"DCSymmetrySet",A="MN:DCSymmetrySet"\d() or \dLK,"DCSymmetry3Set",A="MN:DCSymmetry3Set"\d()
+//See $LK,"DCSymmetrySet",A="MN:DCSymmetrySet"$() or $LK,"DCSymmetry3Set",A="MN:DCSymmetry3Set"$()
 #define DCF_SYMMETRY		0x200
 
 //Must be used with DCF_SYMMETRY set also.
-//See \dLK,"::/Demo/Games/BigGuns.HC"\d
+//See $LK,"::/Demo/Games/BigGuns.HC"$
 #define DCF_JUST_MIRROR		0x400
 
 #define DCF_LOCATE_NEAREST	0x800
@@ -3815,7 +3810,7 @@ public class CTextGlbls
 #define DCF_RECORD_EXTENTS	0x10000
 #define DCF_ON_TOP		0x20000
 
-//\dLK,"DCSave",A="MN:DCSave"\d() flags.
+//$LK,"DCSave",A="MN:DCSave"$() flags.
 #define DCSF_COMPRESSED		1
 #define DCSF_PALETTE_GET	2
 
@@ -3841,21 +3836,21 @@ public class CDC
 
   //public (Change directly)
   CColorROPU32 color,
-	bkcolor, //Set for use with \dLK,"ROP_COLLISION",A="MN:ROP_COLLISION"\d
-	color2; //Internally used for \dLK,"GrFloodFill",A="MN:GrFloodFill"\d()
+	bkcolor, //Set for use with $LK,"ROP_COLLISION",A="MN:ROP_COLLISION"$
+	color2; //Internally used for $LK,"GrFloodFill",A="MN:GrFloodFill"$()
   CD3I32 ls; //Light source (should be normalized to 65536).
 
   //dither_probability_u16 is basically a U16.
-  //It is activated by \dLK,"ROPF_PROBABILITY_DITHER",A="MN:ROPF_PROBABILITY_DITHER"\d.
+  //It is activated by $LK,"ROPF_PROBABILITY_DITHER",A="MN:ROPF_PROBABILITY_DITHER"$.
   //0x0000 =100% color.c0
   //0x8000 =50%  color.c0   50% color.c1
   //0x10000=100% color.c1
-  //See \dLK,"::/Demo/Graphics/SunMoon.HC"\d and	\dLK,"::/Demo/Graphics/Shading.HC"\d.
+  //See $LK,"::/Demo/Graphics/SunMoon.HC"$ and	$LK,"::/Demo/Graphics/Shading.HC"$.
   U64 dither_probability_u16;
 
   CDC *brush;
 
-  //Set with \dLK,"DCMat4x4Set",A="MN:DCMat4x4Set"\d().  \dLK,"Free",A="MN:Free"\d() before setting.
+  //Set with $LK,"DCMat4x4Set",A="MN:DCMat4x4Set"$().  $LK,"Free",A="MN:Free"$() before setting.
   I64	*r, //rotation matrix of quads decimal in lo
 	r_norm; //shifted 32 bits.  Used for scaling thick
 
@@ -3863,28 +3858,28 @@ public class CDC
   I32	x,y,z,
 	thick;
 
-  //Can be changed from the default \dLK,"DCTransform",A="MN:DCTransform"\d()
+  //Can be changed from the default $LK,"DCTransform",A="MN:DCTransform"$()
   U0	(*transform)(CDC *dc,I64 *x,I64 *y,I64 *z);
 
-  //Can be changed from the default \dLK,"DCLighting",A="MN:DCLighting"\d()
+  //Can be changed from the default $LK,"DCLighting",A="MN:DCLighting"$()
   U0	(*lighting)(CDC *dc,CD3I32 *p1,CD3I32 *p2,
 	CD3I32 *p3,CColorROPU32 color);
 
-  //Set by \dLK,"DCSymmetrySet",A="MN:DCSymmetrySet"\d() or \dLK,"DCSymmetry3Set",A="MN:DCSymmetry3Set"\d()
+  //Set by $LK,"DCSymmetrySet",A="MN:DCSymmetrySet"$() or $LK,"DCSymmetry3Set",A="MN:DCSymmetry3Set"$()
   CGrSym sym;
 
   I32	cur_x,cur_y,cur_z,pad;
   I64	collision_cnt;
 
   I64	nearest_dist,
-	min_x,max_x,min_y,max_y; //Set by \dLK,"DCF_RECORD_EXTENTS",A="MN:DCF_RECORD_EXTENTS"\d (scrn coordinates)
+	min_x,max_x,min_y,max_y; //Set by $LK,"DCF_RECORD_EXTENTS",A="MN:DCF_RECORD_EXTENTS"$ (scrn coordinates)
 
   U32	dc_signature,pad;
   CTask	*mem_task,*win_task;
   CDC	*alias;
   U8	*body;
 
-  //Set by \dLK,"DCDepthBufAlloc",A="MN:DCDepthBufAlloc"\d()
+  //Set by $LK,"DCDepthBufAlloc",A="MN:DCDepthBufAlloc"$()
   I32	*depth_buf;
   I64	db_z; //private
 };
@@ -4005,16 +4000,6 @@ class CSndData
   I8	ona;
 };
 
-public class CScrnCastGlbls
-{
-  CSndData snd_head;
-  CDate	t0_now;
-  F64	t0_tS;
-  U8	*print_fmt;
-  CDC	*dc,*dc2_alias;
-  Bool	record,just_audio;
-  I8	ona;
-};
 #define FUN_SEG_CACHE_SIZE	256
 class CFunSegCache
 {
@@ -4055,9 +4040,9 @@ public class CDbgGlbls
 #define BOOT_SRC_HARDDRV	3
 #define BOOT_SRC_DVD		4
 
-// \dLK,"In",A="MN:In"\d("") StdIn for call to \dLK,"BootHDIns",A="MN:BootHDIns"\d().
+// $LK,"In",A="MN:In"$("") StdIn for call to $LK,"BootHDIns",A="MN:BootHDIns"$().
 #define STD_DISTRO_DVD_CFG	"TB\nScale2Mem(2048,0x40000)\nT \n\n\n\n"
-//Registry sys_msg_flags. \dLK,"RegOneTimePopUp",A="MN:RegOneTimePopUp"\d()
+//Registry sys_msg_flags. $LK,"RegOneTimePopUp",A="MN:RegOneTimePopUp"$()
 #define ARf_FLOODFILL			0
 #define ARf_CSPRITE_INS_CLIP		1
 #define ARf_PLANAR_SYMMETRY		2
@@ -4300,15 +4285,13 @@ extern U8 *MStrPrint(U8 *fmt,...);
 extern U8 *GetStr(U8 *msg=NULL,U8 *dft=NULL,I64 flags=0);
 extern U0 throw(I64 ch=0,Bool no_log=FALSE);
 extern U8 *CatPrint(U8 *_dst,U8 *fmt,...);
-extern U8 *DefineMatch(U8 *f,U8 *dname,I64 flags=0);
+extern I64 DefineMatch(U8 *needle,U8 *haystack_lst_dname,I64 flags=0);
 extern U8 *StrPrint(U8 *dst,U8 *fmt,...);
 extern U8 *Define(U8 *dname);
 extern U8 *DefineSub(I64 sub,U8 *dname);
 extern U0 PrintErr(U8 *fmt,...);
 extern U0 PrintWarn(U8 *fmt,...);
 extern U8 *Caller(I64 num=1);
-extern U0 SysTry(U8 *start_label,U8 *skip_label);
-extern U0 SysUntry();
 extern U0 Msg(I64 msg_code,I64 arg1,I64 arg2,I64 flags=0);
 extern Bool TaskValidate(CTask *task);
 extern I64 JobsHndlr(I64 run_flags,CTask *task=NULL);
@@ -4322,7 +4305,7 @@ extern U0 SrvTaskCont();
 extern Bool Suspend(CTask *t=NULL,Bool state=TRUE);
 extern U0 TaskWait(CTask *task=NULL,Bool cmd_line_pmt=FALSE);
 extern CTask *Spawn(U0 (*fp_start_addr)(U8 *data),U8 *data=NULL,U8 *task_name=NULL,
-	I64 target_cpu=-1,	//-1 for current CPU. See \dLK,"multi-core",A="FI:::/Demo/MultiCore/LoadTest.HC"\d.
+	I64 target_cpu=-1,	//-1 for current CPU. See $LK,"multi-core",A="FI:::/Demo/MultiCore/LoadTest.HC"$.
 	CTask *parent=NULL,	//NULL means adam
 	I64 stk_size=0,		//0=default
 	I64 flags=1<<JOBf_ADD_TO_QUE);
@@ -4767,7 +4750,7 @@ extern U0 InStr(U8 *fmt,...);
 extern U0 XTalkWait(CTask *task,U8 *fmt,...);
 extern U0 XTalk(CTask *task,U8 *fmt,...);
 extern U0 StreamPrint(U8 *fmt,...);
-extern I64 ExePrint(U8 *fmt,...);   
+extern I64 ExePrint(U8 *fmt,...);
 public extern CBlkDevGlbls blkdev;
 extern U0 UserTaskCont();
 extern I64 Char2ScanCode(I64 ch,I64 sc_flags=0);
@@ -5027,7 +5010,7 @@ extern U0 UpdateDerivedViewAnglesCtrl(CCtrl *c);
 extern U0 LeftClickViewAngles(CCtrl *c,I64 x,I64 y,Bool);
 extern U0 DrawCtrlBttn(CDC *dc,CCtrl *c);
 extern U0 LeftClickCtrlBttn(CCtrl *c,I64,I64,Bool down);
-extern class CTemplateCS; 
+extern class CTemplateCS;
 extern CTemplateCS *CtrlSliderGet();
 extern U0 TemplateCtrlSlider(CDoc *doc);
 extern U0 DrawCtrlSlider(CDC *dc,CCtrl *c);
@@ -5047,15 +5030,15 @@ extern U0 DirFilesSort(CDirEntry **_tmpde,I64 key);
 extern CDirEntry *DirFilesFlatten(CDirEntry *tmpde,CDirEntry **_res,I64 fuf_flags);
 extern U0 DirContextDel(CDirContext *dirc,Bool restore=TRUE);
 extern Bool Cd2(U8 *to,Bool make=FALSE);
-extern CDirContext *DirContextNew(U8 *_mask,Bool make_mask=FALSE,
-	Bool make_dirs=FALSE,Bool no_mask=FALSE);
+public extern CDirContext *DirContextNew(U8 *mask,
+	Bool make_mask=FALSE,Bool make_dirs=FALSE,Bool no_mask=FALSE);
 extern CDirEntry *FilesFind__(U8 *files_find_mask,I64 fuf_flags=0,
                        CDirEntry *parent=NULL);
 extern CDirEntry *FilesFind2(U8 *files_find_mask,I64 fuf_flags);
 extern CDirEntry *FilesFind(U8 *files_find_mask,I64 fuf_flags=0);
 extern Bool FileFind(U8 *filename,CDirEntry *_de=NULL,I64 fuf_flags=FUF_Z_OR_NOT_Z);
 extern U0 PutFileLink(U8 *filename,U8 *full_name=NULL,I64 line=0,Bool plain_text=FALSE);
-extern I64 Dir(U8 *files_find_mask=".",Bool full=FALSE);
+public extern I64 Dir(U8 *files_find_mask="*",Bool full=FALSE);
 extern U8 *FileExtDot(U8 *src);
 extern U8 *FileExtRem(U8 *src,U8 *dst=NULL);
 extern Bool IsDotZ(U8 *filename);
@@ -5163,6 +5146,7 @@ extern U0 PutExcept(Bool catch_it=TRUE);
 extern U0 SysTry(U8 *catch_start,U8 *untry_start);
 extern U0 SysUntry();
 extern U0 throw(I64 ch=0,Bool no_log=FALSE);
+extern U0 Break();
 extern Bool BreakLock(CTask *task=NULL);
 extern Bool BreakUnlock(CTask *task=NULL);
 extern U0 LoadOneImport(U8 **_src,U8 *module_base,I64 ld_flags);
@@ -5807,11 +5791,9 @@ extern U0 GodBiblePassage(I64 num_lines=20);
 #define EF_RENUM_ASM	2
 #define EF_CTRL_SLIDER	3
 #define EF_CH_SC	4
-extern U8 *StrNew(U8 *str,CTask *t=0) ;
-extern U8 *MAllocIdent(U8 *ptr,CTask *t=0);
 extern U0 Free(U8 *ptr);
-extern U8 *MAlloc32(I64 sz,CTask *t=0);
-extern U8 *MAlloc(I64 sz,CTask *t=0);
+extern U8 *MAlloc32(I64 size,CTask *task=NULL);
+extern U8 *CAlloc32(I64 size,CTask *task=NULL);
 extern U8 *StrScan(U8 *src,U8 *fmt,...);
 extern U0 DbgInfoRead(U8 *name);
 extern U0 TaskDerivedValsUpdate(CTask *task=NULL,Bool update_z_buf=TRUE);
@@ -5832,7 +5814,7 @@ class CMusicGlbls
 
   F64	tM_correction,last_Beat,last_tM;
 } ;
-extern CMusicGlbls music; 
+extern CMusicGlbls music;
 class CGrGlbls
 {
   I64	*to_8_bits,*to_8_colors;
@@ -5973,7 +5955,7 @@ extern Bool ClassRep2(CDoc *doc,U8 *_d,U8 *class_name=lastclass,
 extern Bool Copy(U8 *src_files_find_mask,U8 *dst_files_find_mask=".");
 extern CTask *Fs();
 extern U0 Sleep(I64 ms);
-extern U0 Yield();;
+extern U0 Yield();
 extern CTask *SpawnQue(U0 (*fp_addr)(U8 *data),U8 *data=NULL,U8 *task_name=NULL,
 	I64 target_cpu, CTask *parent=NULL, //NULL means adam
 	I64 stk_size=0,I64 flags=1<<JOBf_ADD_TO_QUE);
@@ -5995,6 +5977,7 @@ extern U8 *AMAllocIdent(U8 *src);
 extern U8 *MAllocIdent(U8 *src,CTask *mem_task=NULL);
 extern U8 *ACAlloc(I64 size);
 extern U8 *MAlloc32(I64 size,CTask *task=NULL);
+extern U8 *CAlloc32(I64 size,CTask *task=NULL);
 extern U8 *CAlloc(I64 size,CTask *mem_task=NULL);
 extern U8 *AMAlloc(I64 size);
 //This dude will whine on OOB by printinng a bracktrace to the console
@@ -6084,7 +6067,6 @@ public extern I64 gr_x_offsets[8],
 	   gr_y_offsets[8],
 	  gr_x_offsets2[4],
 	  gr_y_offsets2[4];
-extern CScrnCastGlbls	scrncast;
 public extern CMsStateGlbls ms;
 public extern CGridGlbls ms_grid;
 public extern CMsHardStateGlbls ms_hard;
@@ -6092,7 +6074,6 @@ extern CMsHardStateGlbls ms_hard_last;
 extern CMsStateGlbls ms_last;
 extern U0 ProgressBarsRegTf(U8 *path=NULL);
 extern U0 ProgressBarsRst(U8 *path=NULL);
-extern Bool ScrnCast(Bool val=ON,Bool just_audio=FALSE,U8 *print_fmt="/Tmp/%X.GR");
 extern CDate Now();
 extern U8 *TaskCaller(CTask *task=NULL,I64 num=0,Bool saved_context=FALSE);
 #define FBO1_NOT_CONST	0
@@ -6189,7 +6170,7 @@ extern U8 *TaskCaller(CTask *task=NULL,I64 num=0,Bool saved_context=FALSE);
 #define LK_DEF		9
 #define LK_HELP_INDEX	10
 #define LK_ADDR		11
-#define LK_DOC		12 //See \dLK,"SpriteEdText",A="MN:SpriteEdText"\d()
+#define LK_DOC		12 //See $LK,"SpriteEdText",A="MN:SpriteEdText"$()
 #define LK_DOC_ANCHOR	13
 #define LK_DOC_FIND	14
 #define LK_DOC_LINE	15
@@ -6299,12 +6280,12 @@ extern U8 *DocSave(CDoc *doc,I64 *_size=NULL);
 extern I64 EdLeftClickLink(CDoc *doc,CDocEntry *doc_e);
 extern I64 PopUpPickLst(U8 *lst);
 extern I64 TermRightClickLink(CDoc *doc,CDocEntry *doc_e);
-extern U0 DocDel(CDoc *);
-extern I64 DocSize(CDoc *);
+public extern U0 DocDel(CDoc *doc);
+public extern I64 DocSize(CDoc *doc);
 extern U8 *Doc2PlainText(CDoc*,CDocEntry*);
-extern CDoc *DocNew(U8*f=NULL,CTask* t=NULL);
-extern Bool DocUnlock(CDoc *);
-extern Bool DocLock(CDoc *);
+extern CDoc *DocNew(U8 *filename=NULL,CTask *task=NULL);
+public extern Bool DocUnlock(CDoc *doc);
+public extern Bool DocLock(CDoc *doc);
 extern U8 *DC2Sprite(CDC *tmpb);
 extern U0 DocUpdateTaskDocs(CTask *task);
 extern CDocEntry *DocPrint(CDoc *doc=NULL,U8 *fmt,...);
@@ -6522,8 +6503,8 @@ public extern U8 MountFile(U8 *filename,U8 drv_let='M');
 public extern U0 Unmount(U8 drv_let=0);
 extern CDirEntry *FMRebuildDocDrv(U8 drv_let,CDoc *doc,CDirEntry **_head,Bool init);
 extern U0 FMRebuildDoc(CDoc **_doc,CDirEntry **_head,I64 mode);
-extern U0 SetResolution(I64 w,I64 h); 
-extern U0 SetScaleResolution(I64 w,I64 h); 
+extern U0 SetResolution(I64 w,I64 h);
+extern U0 SetScaleResolution(I64 w,I64 h);
 extern U0 ScaleMouseCords(I64 *x,I64 *y);
 public extern I64i GrPaletteColorGet(I64i color_num);
 public extern U0 GrPaletteColorSet(I64i color_num,CBGR48 gr48);
@@ -6869,7 +6850,6 @@ extern U0 EdInsTree();
 extern U0 EdInsWidgetWiz();
 extern I64 PopUpSpriteType();
 extern U8 *EdSpriteLink(Bool *_pop_up,U8 **_html_link);
-extern U0 DrawIt(CTask *task,CDC *);
 extern U8 *GrBitMap4ToBitMap8(U8 *dst,U8 *src,I64 src_size,I64 bkcolor);
 extern U8 *GrBitMap1ToBitMap8(U8 *dst,U8 *src,I64 src_size,I64 bkcolor);
 extern I64 GrPutS(CDC *dc=NULL,I64 x,I64 y,U8 *_s);
@@ -7011,16 +6991,16 @@ extern U0 SpriteSideBarPickNew(CDoc *doc,CSprite *head,I64 old_num);
 extern U0 SpriteSideBarTask2(CTask *grand_parent);
 extern U0 SpriteSideBarTask(CTask *parent,CSprite **_head,I64 *_cur_elem_num);
 extern U0 CtrlAltB(I64);
-extern U8 *GetFs2() ;
 extern U0 SysBadFree(I64 *ptr);
 extern U0 SysBadMAlloc(I64 *ptr);
 extern U8 *MemPagAlloc(I64 pags,CBlkPool *bp=NULL);
 extern U0 MemPagFree(CMemBlk *m,CBlkPool *bp=NULL);
 extern CMemBlk *MemPagTaskAlloc(I64 pags,CHeapCtrl *hc);
 extern U0 MemPagTaskFree(CMemBlk *m,CHeapCtrl *hc);
-extern class CDiffItem;
 extern class CLine;
-extern CDiffItem *DiffSub(CDiffItem *res,CLine *str1,CLine *str2,I64 N,I64 M,CLine *sorted_a,CLine *sorted_b,I64 i1_lo,I64 i1_hi,I64 i2_lo,I64 i2_hi) ;
+extern Bool DiffSub(CDoc *doc,I64 *_df_flags,I64 j1_lo,I64 j1_hi,I64 j2_lo,I64 j2_hi,
+	I64 cnt1,I64 cnt2,CDocEntry **doc_sorted1,CDocEntry **doc_sorted2,
+	CDocEntry **doc_unsorted1,CDocEntry **doc_unsorted2);
 extern U0 ACDPopUpDef(U8 *st,I64 num=-1,CTask *parent=NULL);
 extern CHashAC *ACHashAdd(U8 *w);
 extern U0 ACSingleFileAdd(U8 *buf);
@@ -7116,7 +7096,6 @@ extern U0 DocDataScan(CDoc *doc,CDocEntry *doc_e);
 extern U0 DocMenuEndTaskCB();
 extern U0 EdUndoFilter(CDoc *doc);
 extern U8 *DocGetStr2(I64 flags=0);
-extern U0 DrawIt(CTask *task,CDC *dc);
 extern I64 DitherColor2(U8 *header=NULL);
 extern U32 *DocHighlight(CDocEntry *doc_e,U8 *src,I64 len,I64 _tmp_u32_attr);
 extern U0 DocInit();
@@ -7173,7 +7152,6 @@ extern U0 EdInsTree();
 extern U0 EdInsWidgetWiz();
 extern I64 PopUpSpriteType();
 extern U8 *EdSpriteLink(Bool *_pop_up,U8 **_html_link);
-extern U0 DrawIt(CTask *,CDC *dc);
 extern U8 *GrBitMap4ToBitMap8(U8 *dst,U8 *src,I64 src_size,I64 bkcolor);
 extern U8 *GrBitMap1ToBitMap8(U8 *dst,U8 *src,I64 src_size,I64 bkcolor);
 extern I64 GrPutS(CDC *dc=NULL,I64 x,I64 y,U8 *_s);
@@ -7312,14 +7290,12 @@ extern U0 SpriteSideBarPickNew(CDoc *doc,CSprite *head,I64 old_num);
 extern U0 SpriteSideBarTask2(CTask *grand_parent);
 extern U0 SpriteSideBarTask(CTask *parent,CSprite **_head,I64 *_cur_elem_num);
 extern U0 CtrlAltB(I64);
-extern U8 *GetFs2() ;
 extern U0 SysBadFree(I64 *ptr);
 extern U0 SysBadMAlloc(I64 *ptr);
 extern U8 *MemPagAlloc(I64 pags,CBlkPool *bp=NULL);
 extern U0 MemPagFree(CMemBlk *m,CBlkPool *bp=NULL);
 extern CMemBlk *MemPagTaskAlloc(I64 pags,CHeapCtrl *hc);
 extern U0 MemPagTaskFree(CMemBlk *m,CHeapCtrl *hc);
-extern U0 DrawIt(CTask *task,CDC *dc);
 extern U0 UpdateRegVarImg(CHashFun *tmpf,U8 *_b,CTask *task);
 extern U8 *DBlk(I64 blk,Bool write=FALSE);
 extern U8 *DClus(I64 c,Bool write=FALSE,I64 num=0);
@@ -7564,7 +7540,6 @@ extern I64 WinMgrSleep(Bool flush_msgs=FALSE);
 extern CDoc *WinCursorPosSet(CTask *task,I64 msx,I64 msy,Bool set_cursor=TRUE);
 extern Bool WinKeyNavMenu();
 extern U0 WinMgrTask(I64);
-extern U0 DrawIt(CTask *,CDC *dc);
 extern U0 CPURep(Bool full=FALSE);
 #help_index "Processor"
 public _intern IC_RDTSC I64 GetTSC();
@@ -7620,12 +7595,11 @@ extern U8 *sys_pos_pows_lets,
    *sys_neg_pows_lets,
    *sys_pos_pows_lst,
    *sys_neg_pows_lst;
-extern CDoc *sys_registry_doc; 
+extern CDoc *sys_registry_doc;
 extern U8 *ctrl_L_footer;
 extern U8  *(*fp_getstr2)(I64 flags=0);
 extern CDoc *(*fp_doc_put)(CTask *task=NULL);
 extern U0 MakeAll(U8 *dst_loc);
-extern U0 BootDVDIns(U8 *dst_loc,U8 drv_let=0);
 extern U0 FillU16Palindrome(CPalindromeU16 *dst,U16 w);
 extern U0 FillU32Palindrome(CPalindromeU32 *dst,I64 d);
 extern U0 RedSeaISO9660Stage1(U8 *iso_filename,U8 *stage2_filename);
@@ -7633,5 +7607,13 @@ extern U0 RedSeaISO9660(U8 *iso_filename,U8 drv_let);
 extern I64 RedSeaISOPass1(CDirEntry *tmpde);
 extern I64 RedSeaISO(U8 *_iso_filename=NULL,U8 *_src_dir,U8 *_stage2_filename=NULL);
 extern U8 Mount2(U8 boot_drv_let,CDoc *_doc,Bool _caller_is_prtdsk);
-extern U0 __EnableDbg();
-extern U0 __EnableAns();
+#define DYAD_EVENT_LINE    #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_LINE"));}
+#define DYAD_EVENT_DATA    #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_DATA"));}
+#define DYAD_EVENT_CLOSE   #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_CLOSE"));}
+#define DYAD_EVENT_CONNECT #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_CONNECT"));}
+#define DYAD_EVENT_DESTROY #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_DESTROY"));}
+#define DYAD_EVENT_ERROR   #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_ERROR"));}
+#define DYAD_EVENT_READY   #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_READY"));}
+#define DYAD_EVENT_TICK    #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_TICK"));}
+#define DYAD_EVENT_TIMEOUT #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_TIMEOUT"));}
+#define DYAD_EVENT_ACCEPT  #exe{StreamPrint("%d",_DyadGetCallbackMode("DYAD_EVENT_ACCEPT"));}

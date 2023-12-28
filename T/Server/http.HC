@@ -5,6 +5,9 @@ class CUniqueToken {
   CConnection *con;
 };
 class CConnection {
+	U8 *buffer;
+	U8 *buffer_ptr;
+	I64 buffer_len;
 	//These occupy .u8[0]
 	#define CON_S_METHOD 1
 	#define CON_S_FIELDS 2
@@ -315,24 +318,6 @@ U0 EndHttpRequest(CDyadStream *s) {
   }
 //SendRequest may set the session cookie,we we do this after we send the request
   SendRequest(s);
-//SEE ABOVE NOTE
-  MemCpy(&old,con,sizeof(CConnection));
-  Free(con->url->query);
-  Free(con->url->abs_path);
-  Free(con->url->hostname);
-  Free(con->url);
-  Free(con->fbuffer);
-  Free(con->name);
-  HashTableDel(con->post_data);
-
-  MemSet(con,0,sizeof(CConnection));
-  con->unique_token=old.unique_token;
-  con->server=old.server;
-  con->stream=old.stream;
-  con->state.u8[0]=CON_S_METHOD;
-  con->hc=old.hc;
-  con->name=StrNew("",old.hc);
-  con->post_data=HashTableNew(0x10,con->hc);
   DyadEnd(s);
 }
 
@@ -346,13 +331,13 @@ U0 CloseConnectionCB() {
 U0 ParseRequest(CConnection *con) {
 	FramePtrAdd("CACHE_BLOB",NULL);
 	FramePtrAdd("CONNECTION",con);
-        FramePtrAdd("TIMEOUT",(tS+5)(I64));
+    FramePtrAdd("TIMEOUT",(tS+5)(I64));
 	FramePtrAdd(WIKI_SESSION_COOKIE,con->session_cookie);
 	Fs->put_doc=Fs->parent_task->put_doc;
-        Fs->user_data=con;
-        Fs->task_end_cb=&CloseConnectionCB;
-	con->task=Fs;
-        CDyadStream *stream=con->stream;
+    Fs->user_data=con;
+    Fs->task_end_cb=&CloseConnectionCB;
+    con->task=Fs;
+    CDyadStream *stream=con->stream;
 	U8 *http2,*t1,buf[STR_LEN],buf2[STR_LEN],*t2,*ptr,*optr;
 	CHashGeneric *hash;
 	CHTTPRequest req;
@@ -369,30 +354,83 @@ U0 ParseRequest(CConnection *con) {
 		DyadWrite(stream,"\x0d\n",2);
 		break;
 	}
+        DyadEnd(stream);
+	Exit;
 }
-U0 SReadLine(CDyadStream *s,U8 *data,I64 len,CUniqueToken *ut) {
-  static I64 spawn_at=0;
-  CConnection *first,*con,*con2;
-  CHashGeneric *hash;
-  U8 *buf,*buf2;
-  U8 *fb,*http2,*t1,*t2,*odata;
+
+U8 *LookForLine(U8 *ptr,I64 len) {
+  I64 reg RDI cap=ptr;
+  I64 reg R15 l=len;
+  if(!l) return NULL;
+  MOV AL,'\n'
+  MOV RCX,R15
+  REPNE_SCASB
+  JNZ fail
+  return cap;
+  fail:
+  return NULL;
+}
+extern Bool SReadLine(CDyadStream *s,U8 *data,I64 len,CUniqueToken *ut);
+U0 SReadData(CDyadStream *s,U8 *data,I64 len,CUniqueToken *ut) {
+  CConnection *con;
+  U8 *tmp, *ptr;
+  I64 len2;
+  Bool en=FALSE;
   if(ut->con) {
     con=ut->con;
     goto found;
   }
   con=CAlloc(sizeof(CConnection));
+  con->hc=HeapCtrlInit(,Fs,1);
+  con->buffer=MAlloc(0xB00,con->hc);
+  con->buffer_ptr=con->buffer;
+  con->buffer_len=0;
   con->unique_token=ut;
   con->server=ut->srv;
   con->stream=s;
   con->state.u8[0]=CON_S_METHOD;
-  con->hc=HeapCtrlInit(,Fs,1);
   con->name=StrNew("",con->hc);
-  con->post_data=HashTableNew(0x10,con->hc);
+  con->post_data=HashTableNew(0x50,con->hc);
   ut->con=con;
 found:
+  if(MSize(con->buffer)<=1+(con->buffer_ptr-con->buffer)+len+con->buffer_len) {
+    tmp=MAlloc((con->buffer_ptr-con->buffer)+1+2*MSize(con->buffer)+len,con->hc);
+    MemCpy(tmp,con->buffer,MSize(con->buffer));
+    Free(con->buffer);
+    con->buffer_ptr=tmp+(con->buffer_ptr-con->buffer);
+    con->buffer=tmp;
+  }
+  MemCpy(con->buffer_ptr,data,len);
+  con->buffer_len+=len;
+  con->buffer_ptr[con->buffer_len]=0;
+loop:
+  if(ptr=LookForLine(con->buffer_ptr,con->buffer_len)) {
+     len2=ptr-con->buffer_ptr;
+     tmp=MAlloc(len2+1,con->hc);
+     MemCpy(tmp,con->buffer_ptr,len2);
+     tmp[len2]=0;
+     en=SReadLine(s,tmp,len2,ut);
+     Free(tmp);
+     con->buffer_len-=len2;
+     con->buffer_ptr+=len2;
+     if(!en)
+       goto loop;
+  } else {
+    len=con->buffer_len;
+    en=SReadLine(s,con->buffer_ptr,len,ut);
+	con->buffer_len-=len;
+    con->buffer_ptr+=len;
+  }
+}
+Bool SReadLine(CDyadStream *s,U8 *data,I64 len,CUniqueToken *ut) {
+  static I64 spawn_at=0;
+  CConnection *first,*con,*con2;
+  CHashGeneric *hash;
+  U8 *buf,*buf2;
+  U8 *fb,*http2,*t1,*t2,*odata;
+  con=ut->con;
   buf=MAlloc(len+1,con->hc),buf2=MAlloc(len+1,con->hc);
   if(len==2) con->state.u8[0]=CON_S_BLANK_LINE;
-//Pray that header is smaller than 128kb.
   if(con->state.u8[0]==CON_S_METHOD&&!StrNICmp(data,"GET",3)) {
     con->method.u8[0]=HTTP_GET;
     t1=MStrPrint("http://potato.com/%s",Trim(SkipWhitespace(data+3)));
@@ -457,7 +495,7 @@ etag_loop:
     t1=buf;
     if(StrOcc(data,'\"')!=2) goto malformed;
     data=StrScan(data,"\"%s\"",&t1);
-    if(ETagChanged(con->server,buf)){
+    if(ETagChanged(con->server,buf)) {
       con->etag_changed=1;
     }
     if(*data==',') {
@@ -546,14 +584,14 @@ loop:
 	  if(!StrNICmp(data,"name",StrLen("name"))) {
 	    t2=con->field;
 	    if(!StrFirstOcc(data,"\"")) goto malformed;
-	    if(StrOcc(data,'\"')!=2) goto malformed;
+	    if(StrOcc(data,'\"')<2) goto malformed;
 	    data=StrScan(StrFirstOcc(data,"\""),"\"%s\"",&t2);
 	  } else if(!StrNICmp(data,"filename",StrLen("filename"))) {
 	    if(con->name) Free(con->name);
 	    con->name=MAlloc(len+1,con->hc);
 	    t2=con->name;
 	    if(!StrFirstOcc(data,"\"")) goto malformed;
-	    if(StrOcc(data,'\"')!=2) goto malformed;
+	    if(StrOcc(data,'\"')<2) goto malformed;
 	    data=StrScan(StrFirstOcc(data,"\""),"\"%s\"",&t2);
 	  }
 	  if(data) data=StrFirstOcc(data,";");
@@ -562,7 +600,7 @@ loop:
 	    goto loop;
 	  }
 	  Free(buf),Free(buf2);
-	  return;
+	  return FALSE;
         }
       } 
     } else if(!Bt(&con->state,CONf_DATA)&&len==2) { //+2 for \x0d\n
@@ -570,8 +608,8 @@ loop:
     } else if(Bt(&con->state,CONf_DATA)) {
       if(!con->fbuffer) {
 	con->fbuffer=MAlloc(len+1,con->hc);
-      } else {
-        t1=MAlloc(con->field_ptr+len+1,con->hc);
+      } else if(MSize(con->fbuffer)<=1+len+con->field_ptr) {
+        t1=MAlloc(2*con->field_ptr+len+1,con->hc);
 	MemCpy(t1,con->fbuffer,con->field_ptr);
 	Free(con->fbuffer);
 	con->fbuffer=t1;
@@ -586,17 +624,18 @@ en:
   if(len==2&&!Bt(&con->state,CONf_AWAIT_BOUNDARY)&&!(Bt(&con->state,CONf_URL_ENCODED)&&con->content_len))
     goto process;
   Free(buf),Free(buf2);
-  return;
+  return FALSE;
 malformed:
   Free(buf),Free(buf2);
   DyadEnd(s);
-  return;
+  return TRUE;
 process:
   Free(buf),Free(buf2);
 //If we have content,make sure we recieved all the data
   if((con->content_len&&con->content_len==con->field_ptr)||!con->content_len){
-    Spawn(&ParseRequest,con,"Request");
+    Spawn(&ParseRequest,con,"Request",,Fs);
   }
+  return FALSE;
 }
 U0 CloseCallback(CDyadStream *s,CUniqueToken *ut) {
 //Killing the thread will fre the connection too
@@ -622,21 +661,42 @@ U0 CloseCallback(CDyadStream *s,CUniqueToken *ut) {
   return;
 }
 U0 ListenCallback(CDyadStream *s,CServer *srv) {
-	CUniqueToken *ut=CAlloc(sizeof(CUniqueToken));
-	ut->srv=srv;
-	DyadSetTimeout(s,5);
-	DyadSetReadCallback(s,&SReadLine,ut);
-	DyadSetOnCloseCallback(s,&CloseCallback,ut);
-	DyadSetOnTimeoutCallback(s,&CloseCallback,ut);
+  CUniqueToken *ut=CAlloc(sizeof(CUniqueToken));
+  ut->srv=srv;
+  DyadSetTimeout(s,60);
+  DyadSetReadCallback(s,DYAD_EVENT_DATA,&SReadData,ut);
+  DyadSetCloseCallback(s,DYAD_EVENT_CLOSE,&CloseCallback,ut);
+  DyadSetListenCallback(s,DYAD_EVENT_TIMEOUT,&CloseCallback,ut);
 }
+
+U0 ServeTask(CServer *srv) {
+  srv->task=Fs;
+  DyadListen(srv->s_sock,srv->port);
+  DyadSetListenCallback(srv->s_sock,DYAD_EVENT_ACCEPT,&ListenCallback,srv);
+  while (TRUE) {
+    Sleep(1);
+    DyadUpdate;
+  }
+}
+
 U0 Serve(CServer *srv) {
-	srv->task=Fs;
-	DyadListen(srv->s_sock,srv->port);
-	DyadSetOnListenCallback(srv->s_sock,&ListenCallback,srv);
-	"Press a button to quit serving\n";
-	while(!ScanKey) {
-		Sleep(10);
-		DyadUpdate;
-	}
-	DyadShutdown;
+  I64 core=-1;
+  CTask *srv_task;
+  Seed(__GetTicksHP*UnixNow);
+  if (mp_cnt>1)
+    core=RandU64%(mp_cnt-1)+1;
+      // we dont want core 0 since it has
+      // a lot of things going on
+  if (!__IsCmdLine) {
+    "Press a button to quit serving\n";
+    srv_task=Spawn(&ServeTask,srv,"Server",core);
+    GetKey;
+  } else {
+    "Press enter to quit serving\n";
+    srv_task=Spawn(&ServeTask,srv,"Server",core);
+    Free(__GetStr);
+  }
+  DyadShutdown;
+  Kill(srv_task);
 }
+

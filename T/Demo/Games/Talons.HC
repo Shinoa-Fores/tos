@@ -1,6 +1,7 @@
-I64 scrn_lock=0; //Added to remove screen flickering
+I64 scrn_lock=0; //Added to remove screen flickering
 
 //Uses $LK,"fixed-point",A="FI:::/Demo/Lectures/FixedPoint.HC"$.
+
 
 RegDft("TempleOS/Talons","F64 best_score=9999;\n");
 RegExe("TempleOS/Talons");

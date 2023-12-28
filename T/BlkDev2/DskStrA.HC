@@ -311,7 +311,7 @@ returns default.
 //Changed to >1 to avoid chopping off 'T:[/]' in 'T:/'
   while (StrOcc(st,'/')>1&&!IsDir(st))
     StrLastRem(st,"/");
-//If we have a "T:/file",remove "file" to turn into "T:/"
+//If we have a "T:/file",remove "file" to turn into "T:/"
   if(StrOcc(st,'/')==1&&!IsDir(st)) {
     st2=StrLastOcc(st,"/");
     st2[0]='/';

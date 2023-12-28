@@ -168,7 +168,7 @@ fn_skip:
 }
 
 public U0 EdSelAll(CDoc *doc,Bool sel)
-{//Set state of \dLK,"DOCET_SEL",A="MN:DOCET_SEL"\d on all entries.
+{//Set state of $LK,"DOCET_SEL",A="MN:DOCET_SEL"$ on all entries.
   Bool unlock=DocLock(doc);
   CDocEntry *doc_e=doc->head.next;
   while (doc_e!=doc) {
@@ -320,7 +320,7 @@ public Bool EdGoToFun(CDoc *doc,Bool fwd,Bool abort_on_dbl_colon)
 }
 
 public U0 EdSelFun(CDoc *doc,Bool abort_on_dbl_colon=FALSE)
-{//Set \dLK,"DOCET_SEL",A="MN:DOCET_SEL"\d on all entries in cur fun.
+{//Set $LK,"DOCET_SEL",A="MN:DOCET_SEL"$ on all entries in cur fun.
   Bool unlock=DocLock(doc);
   U8 *ptr;
   I64 ch,levels=0,colons=0;

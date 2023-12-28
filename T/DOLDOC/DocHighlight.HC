@@ -6,7 +6,7 @@ CColorROPU32 highlight_hash_type_colors[HTt_TYPES_NUM]=
 	DOC_COLOR_KEYWORD,DOC_COLOR_KEYWORD,DOC_COLOR_REG,0,0,0,0};
 
 U32 *DocHighlight(CDocEntry *doc_e,U8 *src,I64 len,I64 _tmp_u32_attr)
-{//Be aware of \dLK,"::/Demo/ToHtmlToTXTDemo/ToHtml.HC"\d.
+{//Be aware of $LK,"::/Demo/ToHtmlToTXTDemo/ToHtml.HC"$.
   U32 *res=MAlloc((len+1)*sizeof(U32)),*dst=res;
   U8 *ptr;
   CDocSettings *s=&doc_e->settings;

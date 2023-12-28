@@ -215,7 +215,7 @@ U8 *Doc2PlainText(CDoc *doc,CDocEntry *doc_e)
 }
 
 CDocEntry *PrsDollarCmd(CDoc *doc,U8 *st)
-{//Uses \dLK-UL,"Lex",A="MN:Lex"\d() to parse a string and make Doc entries.
+{//Uses $LK-UL,"Lex",A="MN:Lex"$() to parse a string and make Doc entries.
   I64 i,j,de_flags,processed_flags,attr=DOC_DFT;
   U8 *ptr,*st2;
   CDocEntry *doc_e=NULL;
@@ -308,7 +308,7 @@ CDocEntry *PrsDollarCmd(CDoc *doc,U8 *st)
 	switch [j] {//TODO: Might check for expression errors
 	  case DOCEf_TAG:
 	    if (!doc_e->tag) {
-//If a \dMA,LM=""\d, Tag is filled when the LM is processed.
+//If a $MA,LM=""$, Tag is filled when the LM is processed.
 	      //if doc_e->df_flags&DOCEF_LST,
 	      // Tag is filled when the Define is processed.
 	      //(The dft_flag1.tag calls this after.)
@@ -349,8 +349,8 @@ CDocEntry *PrsDollarCmd(CDoc *doc,U8 *st)
 	      st2=LexExtStr(cc);
 	      doc_e->aux_str=StrNew(st2,doc->mem_task);
 	      Free(st2);
-//\dAN,"Anchor",A="DataTagWidth"\d
-	      if (i==DOCT_DATA) { //See \dLK,"DocForm",A="MN:DocForm"\d()
+//$AN,"Anchor",A="DataTagWidth"$
+	      if (i==DOCT_DATA) { //See $LK,"DocForm",A="MN:DocForm"$()
 		if (ptr=StrMatch(":",doc_e->aux_str))
 		  doc_e->min_col=ptr-doc_e->aux_str+1;
 		doc_e->tag=MAlloc(doc_e->len+doc_e->min_col+2,

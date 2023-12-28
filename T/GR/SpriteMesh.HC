@@ -444,7 +444,7 @@ U0 MPDrawIt(CMeshFrame *e)
   CMeshEdTri *tmpt=e->tri_head.next;
   I64 i,*old_r=dc->r;
 
-  //\dLK,"DCAlias",A="MN:DCAlias"\d() allocs a new identity rotation matrix.
+  //$LK,"DCAlias",A="MN:DCAlias"$() allocs a new identity rotation matrix.
   //We want e->dc's rotation matrix.
   dc->r=e->dc->r;
   dc->depth_buf=e->depth_buf;
@@ -501,7 +501,7 @@ U0 MPDrawIt(CMeshFrame *e)
   }
   dc->r=old_r;
 
-  //e->dc's depth buf was copied but we don't want it freed during \dLK,"DCDel",A="MN:DCDel"\d().
+  //e->dc's depth buf was copied but we don't want it freed during $LK,"DCDel",A="MN:DCDel"$().
   dc->depth_buf=NULL;
 
   DCDel(dc);
@@ -544,7 +544,7 @@ I64 *MeshSetW2S(CMeshFrame *e,CTask *task)
   e->w2s=MeshW2S(e,task);
   Free(e->s2w);
   e->s2w=MeshS2W(e,task);
-//returned matrix is assigned to dc->r and will be freed by \dLK,"DCDel",A="MN:DCDel"\d().
+//returned matrix is assigned to dc->r and will be freed by $LK,"DCDel",A="MN:DCDel"$().
   return Mat4x4New(e->w2s,task);
 }
 
@@ -961,8 +961,8 @@ If head points to a mesh, it will load it.
 
 Returns a newly malloced mesh or NULL.
 
-See \dLK,"::/Demo/Graphics/SpritePlot3D.HC"\d.
-\dWW,0\d*/
+See $LK,"::/Demo/Graphics/SpritePlot3D.HC"$.
+$WW,0$*/
   CCtrl *c=CtrlFindUnique(Fs,CTRLT_VIEWING_ANGLES);
   CViewAngles *s,*old_s;
   I64 i,msg_code,sel_mode,arg1,arg2,make_tri_vertex_num=0,x,y,z;
@@ -1040,20 +1040,20 @@ See \dLK,"::/Demo/Graphics/SpritePlot3D.HC"\d.
 	"  ReverseTri(,'R');"
 	"}");
 
-  SettingsPush; //See \dLK,"SettingsPush",A="MN:SettingsPush"\d
+  SettingsPush; //See $LK,"SettingsPush",A="MN:SettingsPush"$
   AutoComplete;
   OneTimePopUp(sys_msg_flags,ARf_MESH_ED,
-	"\dGREEN\dRight Mouse\dFG\d: Hold and move to shift cursor z\n"
-	"\dGREEN\d'j'\dFG\d: Jump cursor Z to nearest vertex's Z\n"
-	"\dGREEN\d'v'\dFG\d: Place Vertex Mode\n"
-	"\dGREEN\d'm'\dFG\d: Move Vertex Mode\n"
-	"\dGREEN\d'M'\dFG\d: Move Vertex Z\n"
-	"\dGREEN\d't'\dFG\d: Form Triangle Mode\n"
-	"\dGREEN\d'n'\dFG\d: Polygon Mode\n"
-	"\dGREEN\d'f'\dFG\d: Fence Mode\n"
-	"\dGREEN\d'p'\dFG\d: Prism Mode\n"
-	"\dGREEN\d'c'\dFG\d: Set color\n"
-	"\dGREEN\d's'\dFG\d: Set snap\n"
+	"$GREEN$Right Mouse$FG$: Hold and move to shift cursor z\n"
+	"$GREEN$'j'$FG$: Jump cursor Z to nearest vertex's Z\n"
+	"$GREEN$'v'$FG$: Place Vertex Mode\n"
+	"$GREEN$'m'$FG$: Move Vertex Mode\n"
+	"$GREEN$'M'$FG$: Move Vertex Z\n"
+	"$GREEN$'t'$FG$: Form Triangle Mode\n"
+	"$GREEN$'n'$FG$: Polygon Mode\n"
+	"$GREEN$'f'$FG$: Fence Mode\n"
+	"$GREEN$'p'$FG$: Prism Mode\n"
+	"$GREEN$'c'$FG$: Set color\n"
+	"$GREEN$'s'$FG$: Set snap\n"
 	"\nSee menu at top of scrn for more.\n");
 
   Fs->win_inhibit=WIG_TASK_DFT|WIF_SELF_DOC-WIF_SELF_FOCUS-WIF_SELF_BORDER

@@ -1,5 +1,5 @@
 U0 GridInit()
-{//Init mouse grid struct. See \dLK,"::/Demo/Graphics/Grid.HC"\d.
+{//Init mouse grid struct. See $LK,"::/Demo/Graphics/Grid.HC"$.
   ms_grid.x=ms_grid.y=ms_grid.z=8;
   ms_grid.x_offset=ms_grid.y_offset=ms_grid.z_offset=0;
   ms_grid.x_speed =ms_grid.y_speed =ms_grid.z_speed =1;
@@ -38,7 +38,7 @@ U0 MsUpdate(I64 x,I64 y,I64 z,Bool l,Bool r)
 }
 
 U0 MsSet(I64 x=I64_MAX,I64 y=I64_MAX,I64 z=I64_MAX,I64 l=I64_MAX,I64 r=I64_MAX)
-{//Note: Generates a message. See \dLK,"MsSet",A="FF:::/Demo/Games/Zing.HC,MsSet"\d().
+{//Note: Generates a message. See $LK,"MsSet",A="FF:::/Demo/Games/Zing.HC,MsSet"$().
   if (!(0<=x<GR_WIDTH))
     x=ms.pos.x;
   if (!(0<=y<GR_HEIGHT))

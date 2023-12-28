@@ -93,7 +93,7 @@ U0 DocDataFmt(CDoc *doc,CDocEntry *doc_e,I64 d=DOCM_CANCEL)
 	  MemCpy(doc_e->tag,ptr,i+1);
 	else {
 	  ptr2=MAlloc(i+8,doc->mem_task);
-	  doc_e->len=MSize(ptr2)-doc_e->min_col-2;	 //See \dLK,"DataTagWidth",A="FA:::/Adam/DolDoc/DocPlain.HC,DataTagWidth"\d
+	  doc_e->len=MSize(ptr2)-doc_e->min_col-2;	 //See $LK,"DataTagWidth",A="FA:::/Adam/DolDoc/DocPlain.HC,DataTagWidth"$
 	  MemCpy(ptr2,ptr,i+1);
 	  Free(doc_e->tag);
 	  doc_e->tag=ptr2;
@@ -209,7 +209,7 @@ U0 DocDataScan(CDoc *doc,CDocEntry *doc_e)
 public Bool DocForm(U8 *_d,U8 *class_name=lastclass,
     I64 dof_flags=0,U8 *header=NULL,U8 *footer=NULL)
 {//User input. Supply a class name that has format definitions.
-//See \dLK,"::/Demo/DolDoc/Form.HC"\d and \dLK,"::/Demo/LastClass.HC"\d.
+//See $LK,"::/Demo/DolDoc/Form.HC"$ and $LK,"::/Demo/LastClass.HC"$.
   CMemberLst *ml;
   CDocEntry *doc_e;
   U8 *format;
@@ -241,7 +241,7 @@ public Bool DocForm(U8 *_d,U8 *class_name=lastclass,
 	      doc_e->len=ml->dim.total_cnt;
 	      if (doc_e->de_flags&DOCEF_HAS_TERMINATOR)
 		doc_e->len--;
-	      Free(doc_e->tag);  //See \dLK,"DataTagWidth",A="FA:::/Adam/DolDoc/DocPlain.HC,DataTagWidth"\d
+	      Free(doc_e->tag);  //See $LK,"DataTagWidth",A="FA:::/Adam/DolDoc/DocPlain.HC,DataTagWidth"$
 	      doc_e->tag=MAlloc(doc_e->len+doc_e->min_col+2,
 		    doc->mem_task); //+2 because "_\0"
 	    }
@@ -338,7 +338,7 @@ public I64 PopUpMenu(CDoc *doc,I64 dof_flags=0)
 
 public Bool PopUpForm(U8 *_d,U8 *class_name=lastclass,
 	I64 dof_flags=DOF_SIZE_MIN,U8 *header=NULL,U8 *footer=NULL)
-{//See \dLK,"::/Demo/DolDoc/Form.HC"\d and \dLK,"::/Demo/LastClass.HC"\d.
+{//See $LK,"::/Demo/DolDoc/Form.HC"$ and $LK,"::/Demo/LastClass.HC"$.
   return PopUpPrint("DocForm(0x%X,0x%X,0x%X,0x%X,0x%X);",_d,class_name,
 	dof_flags,header,footer);
 }

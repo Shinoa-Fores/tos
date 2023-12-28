@@ -1,8 +1,4 @@
-/*  Kernel ASM symbols.
-\dLK,"KernelB",A="FF:::/Kernel/Kernel.PRJ,KernelB"\d Kernel.PRJ
-\dLK,"KernelB",A="FF:::/Compiler/Compiler.PRJ,KernelB"\d Compiler.PRJ
-\dLK,"KernelB",A="FF:::/StartOS.HC,KernelB"\d StartOS.HC
-*/
+//Kernel ASM symbols.
 public _extern _BEQU Bool BEqu(
 	U8 *bit_field,I64 bit,Bool val);//Set bit equ to val.
 public _extern _BIT_FIELD_EXT_U32 U32 BFieldExtU32(
@@ -65,7 +61,7 @@ public _extern _LXCHG_U16 U16 LXchgU16(U16 *dst,U16 d); //Locked eXchange U16s.
 public _extern _LXCHG_U32 U32 LXchgU32(U32 *dst,U32 d); //Locked eXchange U32s.
 public _extern _LXCHG_U8  U8 LXchgU8(U8 *dst,U8 d); //Locked eXchange U8s.
 public _extern _SET_MSR U0 SetMSR(
-	I64 model_specific_reg,I64 val); //Model Specific Reg See \dLK,"MSRs",A="MN:IA32_EFER"\d.
+	I64 model_specific_reg,I64 val); //Model Specific Reg See $LK,"MSRs",A="MN:IA32_EFER"$.
 public _extern _SYS_HLT U0 SysHlt(); //Loops doing HLT inst.
 public _extern _XCHG_I64 I64 XchgI64(I64 *dst,I64 d); //eXchange I64s.
 public _extern _XCHG_U16 U16 XchgU16(U16 *dst,U16 d); //eXchange U16s.
@@ -143,7 +139,6 @@ _extern _MSIZE I64 MSize(U8 *src); //Size of heap object.
 _extern _MSIZE2 I64 MSize2(U8 *src); //Internal size of heap object.
 _extern _MHEAP_CTRL CHeapCtrl *MHeapCtrl(U8 *src); //$LK,"CHeapCtrl",A="MN:CHeapCtrl"$ of object.
 //_extern _MALLOC U8 *MAlloc(I64 size,CTask *mem_task=NULL); //Alloc memory chunk.
-_extern _BREAK U0 Break();
 
 public _extern SYS_PROGRESS1 I64 progress1; //Current progress 1.
 public _extern SYS_PROGRESS1_DESC

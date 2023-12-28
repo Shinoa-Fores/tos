@@ -19,7 +19,7 @@ public I64 PopUpColor(U8 *header=NULL,
 }
 
 public I64 PopUpColorLighting(U8 *header=NULL)
-{//Chooser for std TempleOS \dLK,"DCLighting",A="MN:DCLighting"\d() color.
+{//Chooser for std TempleOS $LK,"DCLighting",A="MN:DCLighting"$() color.
   I64 i;
   CDoc *doc=DocNew;
   if (header)
@@ -119,7 +119,7 @@ I64 DitherColor2(U8 *header=NULL)
   "%s",header;
   DocRecalc(DocPut);
   FramePtrAdd("DitherFrame",(DocPut->max_y+1)*FONT_HEIGHT);
-  SettingsPush; //See \dLK,"SettingsPush",A="MN:SettingsPush"\d
+  SettingsPush; //See $LK,"SettingsPush",A="MN:SettingsPush"$
   Fs->draw_it=&DrawIt;
   do {
     msg_code=GetMsg(&arg1,&arg2,1<<MSG_MS_L_DOWN|1<<MSG_KEY_DOWN);

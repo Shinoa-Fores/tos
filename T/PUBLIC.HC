@@ -256,7 +256,7 @@ public extern U0 DVDImageWrite(U8 dvd_drv_let,
 public extern Bool FBlkRead(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1);
 public extern Bool FBlkWrite(CFile *f,U8 *buf,I64 blk=FFB_NEXT_BLK,I64 cnt=1);
 public extern U0 FClose(CFile *f);
-public extern CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0);
+public extern CFile *FOpen(U8 *filename,U8 *flags,I64 cnt=0,CTask *mem_task=NULL);
 public extern I64 FSize(CFile *f);
 
 #help_index "File/Cmd Line (Typically);Cmd Line (Typically)"
@@ -432,7 +432,7 @@ public extern U0 AdamLog(U8 *fmt,...);
 public extern I64 ExeCmdLine(CCmpCtrl *cc);
 public extern U0 JobDel(CJob *tmpc);
 public extern I64 JobsHndlr(I64 run_flags,CTask *task=NULL);
-extern U0 SrvCmdLine();
+extern U0 SrvCmdLine(I64 dummy=0);
 public extern U0 SrvTaskCont();
 public extern CJob *TaskExe(CTask *srv,CTask *master,U8 *data,I64 flags);
 public extern U0 TaskRstAwaitingMsg(CTask *task=NULL);
@@ -594,7 +594,7 @@ extern U0 MsInit();
 extern U0 MsUpdate(I64 x,I64 y,I64 z,Bool l,Bool r);
 
 #help_index "MultiCore"
-#help_file "::/Doc/MultiCore"
+#help_file "::/Doc/MultiCore"
 public extern CTask *SpawnQue(U0 (*fp_addr)(U8 *data),U8 *data=NULL,
 	U8 *task_name=NULL,I64 target_cpu,
 	CTask *parent=NULL, //NULL means adam
@@ -615,11 +615,6 @@ public extern U8 *IntEntryGet(I64 irq);
 public extern U8 *IntEntrySet(I64 irq,
 	U0 (*fp_new_hndlr)(),I64 type=IDTET_IRQ,I64 dpl=0);
 
-#help_index "ScrnCast;Cmd Line (Typically)"
-public extern Bool ScrnCast(Bool val=ON,Bool just_audio=FALSE,
-	U8 *print_fmt="B:/Tmp/%X.GR")
-public extern CScrnCastGlbls scrncast;
-
 #help_index "Snd"
 #help_file "::/Doc/Snd"
 public extern U0 Beep(I8 ona=62,Bool busy=FALSE);
@@ -637,7 +632,7 @@ public extern U0 SndRst();
 #help_file "::/Doc/Streams"
 
 #help_index "Task"
-public extern I64 BirthWait(CTask **_task,I64 task_num=-1);
+public extern I64 BirthWait(CTask **_task);
 public extern U0 DeathWait(CTask **_task,Bool send_exit=FALSE);
 public extern U0 Exit();
 public extern Bool IsSuspended(CTask *task=NULL);
@@ -651,7 +646,7 @@ public extern U0 TaskQueRem(CTask *task);
 public extern Bool TaskValidate(CTask *task);
 public extern U0 TaskWait(CTask *task=NULL,Bool cmd_line_pmt=FALSE);
 public extern CTask *User(U8 *fmt=NULL,...);
-public extern U0 UserCmdLine();
+public extern U0 UserCmdLine(I64 dummy=0);
 public extern CTask *adam_task;
 public extern I64 sys_num_spawned_tasks;
 extern CTask *sys_winmgr_task,*sys_task_being_scrn_updated;
@@ -747,7 +742,7 @@ public extern U8 *FileMgr(I64 mode=FM_NORMAL,CTask *mem_task=NULL);
 #help_index "Install;File/Cmd Line (Typically);Cmd Line (Typically);"
 public extern U8 Mount(Bool caller_is_prtdsk=FALSE);
 public extern U0 Unmount(U8 drv_let=0);
-public extern U8 MountFile(U8 *filename);
+public extern U8 MountFile(U8 *filename,U8 drv_let='M');
 #help_index "AutoComplete/Dictionary"
 public extern U8 *ACDDefGet(U8 *st,I64 def_num=1)
 public extern U8 *ACDDefsGet(U8 *st);
@@ -1208,13 +1203,7 @@ I64 attr); //Plot attrs with len.  30fps in Fs->draw_it() callback.
 public extern U0 TextPrint(CTask *task,I64 x,I64 y,I64 attr,U8 *fmt,...);
 public extern U0 TextBorder(CTask *task=NULL,I64 l,I64 r,I64 t,I64 b,I64 attr,Bool solid);
 public extern U0 TextRect(I64 l,I64 r,I64 t,I64 b,I64 d);
-#help_index "ScrnCast;Graphics/Device Contexts;Graphics/GR Files"
 
-public extern I64 GR2MV(U8 *print_fmt="VID%03d.MV",
-	U8 *files_find_mask,U8 *fu_flags=NULL);
-#help_index "ScrnCast;Snd/AU Files"
-public extern U0 SndShift(CSndData *head,F64 dt=0);
-public extern I64 AUWrite(U8 *filename,CSndData *head,CDate *t0_now,F64 t0_tS);
 #help_index "Graphics/Sprite;Sprites"
 public extern U0 Sprite2Code(CDoc *doc=NULL,U8 *elems);
 public extern U8 *Code2Sprite(CDoc *doc,I64 *_size=NULL);
@@ -1253,10 +1242,10 @@ public extern U0 S2T(U8 *files_find_mask,U8 *fu_flags=NULL);
 
 #help_index "Debugging/Dump"
 public extern U0 ClassRep(U8 *_d,U8 *class_name=lastclass,
-	I64 max_depth=2,Bool fun=FALSE,I64 offset=0);
+	I64 max_depth=2,Bool fun=FALSE,I64 offset=0,Bool include_regs=FALSE);
 public extern U0 ClassRepD(U8 *_d,U8 *class_name=lastclass,
 	I64 max_depth=2,Bool fun=FALSE,I64 offset=0);
-public extern U0 FunRep(U8 *st,U8 *rbp=NULL,I64 max_depth=2,CTask *task=NULL);
+public extern U0 FunRep(U8 *st,U8 *rbp=NULL,I64 max_depth=2,CTask *task=NULL,Bool include_regs=FALSE);
 #help_index "Debugging/Unassemble"
 public extern U0 Uf(U8 *st);
 #help_index "Info;Hash;Cmd Line (Typically)"
@@ -1402,7 +1391,7 @@ public extern Bool WinBorder(Bool val=OFF,CTask *task=NULL);
 
 public extern U0 Refresh(I64 cnt=1,Bool force=FALSE);
 #help_index "Compiler"
-public extern U0 CInit(Bool first);
+public extern U0 CInit();
 public extern I64 ExeFile(U8 *name,I64 ccf_flags=0);
 public extern I64 ExeFile2(U8 *name,I64 ccf_flags=0);
 public extern I64 ExePrint(U8 *fmt,...);

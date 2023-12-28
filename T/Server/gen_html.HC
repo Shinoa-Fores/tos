@@ -123,7 +123,7 @@ U8 *RemoveEscapedChars(U8 *t1) {
   for(;*t2;t2++) {
     if(t3!=t2)
       *t3=*t2;
-     if(*t2=='!'&&StrOcc("-_/*[}+{|",t2[1]))
+     if(*t2=='!'&&StrOcc("-_/*[}+{|",t2[1]))
        ;
      else
        t3++;

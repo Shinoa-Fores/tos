@@ -1,7 +1,7 @@
 #help_index "DolDoc/Output;StdOut/DolDoc"
 
 CDocEntry *DocPutS(CDoc *doc,U8 *st)
-{//Don't use this.  Use \dLK-UL,"DocPrint",A="MN:DocPrint"\d().
+{//Don't use this.  Use $LK-UL,"DocPrint",A="MN:DocPrint"$().
 //Does not handle partial Doc entries.
   //Returns last newly created dollar-sign CDocEntry or NULL.
   U8 *ptr=st,*ptr2,*st2,*ptr3,*ptr4,*src,
@@ -269,7 +269,7 @@ U0 DocDump(CDoc *doc,I64 uS_delay=0)
 }
 
 public CDocEntry *DocPutLine(CDoc *doc=NULL,CDocEntry *doc_e)
-{//Send line from other doc to StdOut \dLK,"DocPut",A="MN:DocPut"\d.
+{//Send line from other doc to StdOut $LK,"DocPut",A="MN:DocPut"$.
   I64 ch;
   U8 *ptr,*ptr2;
   Bool unlock;

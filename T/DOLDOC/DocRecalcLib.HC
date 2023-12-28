@@ -178,7 +178,7 @@ public I64 DocMax(I64 i=I64_MAX)
 //Adjusts the size of the cmd line buf.
   //Normally, the cmd line deletes entries
   //when more are added and the old scroll up.
-  //See \dLK,"max_entries",A="FF:::/Adam/DolDoc/DocTerm.HC,max_entries"\d.
+  //See $LK,"max_entries",A="FF:::/Adam/DolDoc/DocTerm.HC,max_entries"$.
   I64 res;
   CDoc *doc;
   if (doc=DocPut) {
@@ -191,7 +191,7 @@ public I64 DocMax(I64 i=I64_MAX)
 
 #help_index "DolDoc/Task;StdOut/Task"
 U0 DocUpdateTaskDocs(CTask *task)
-{//This is called from \dLK,"GrUpdateTaskWin",A="MN:GrUpdateTaskWin"\d() by the winmgr at 30fps.
+{//This is called from $LK,"GrUpdateTaskWin",A="MN:GrUpdateTaskWin"$() by the winmgr at 30fps.
   CDoc *doc;
   CD3I64 saved_scroll;
   if (task->border_src==BDS_CUR_DRV && task->cur_dv)

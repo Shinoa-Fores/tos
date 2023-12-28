@@ -1,6 +1,6 @@
 #help_index "DolDoc/Output;StdOut/DolDoc"
 public U0 DocPutKey(CDoc *doc,I64 ch=0,I64 sc=0)
-{//\dLK,"PutKey",A="MN:PutKey"\d(ch,sc) at doc insert pt, cur_entry.
+{//$LK,"PutKey",A="MN:PutKey"$(ch,sc) at doc insert pt, cur_entry.
   I64 i,x,y;
   CDoc *m;
   CDocEntry *doc_ce;
@@ -329,7 +329,7 @@ public U0 DocPutKey(CDoc *doc,I64 ch=0,I64 sc=0)
 		      else
 			KeyDescSet("Cmd /God Song");
 		    } else {
-//\dLK,"::/Adam/God/HSNotes.DD"\d
+//$LK,"::/Adam/God/HSNotes.DD"$
 		      if (sc&SCF_SHIFT) {
 			DocUnlock(doc);
 			GodDoodle;
@@ -345,7 +345,7 @@ public U0 DocPutKey(CDoc *doc,I64 ch=0,I64 sc=0)
 		      else
 			KeyDescSet("Cmd /God Word");
 		    } else {
-//\dLK,"::/Adam/God/HSNotes.DD"\d
+//$LK,"::/Adam/God/HSNotes.DD"$
 		      //FifoU8Flush(god.fifo); TODO Use high performance timer
 		      //GodBitsIns(GOD_GOOD_BITS,KbdMsEvtTime>>GOD_BAD_BITS);
 		      if (sc&SCF_SHIFT)
