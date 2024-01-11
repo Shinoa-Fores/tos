@@ -89,6 +89,7 @@ DirMk("folder");
 Dir;
 Dir("fold*");//supports wildcards
 Cd("folder");
+Copy("/path/1" "/path/2");
 Man("Ed");
 Ed("file.HC.Z");
 Unzip("file.HC.Z");//unzip TempleOS compression
@@ -99,5 +100,5 @@ MountFile("Something.ISO.C");//MountFile(U8 *f,U8 drv_let='M');
 Cd("M:/");//defaults to M
 INT3;//force raise debugger
 DbgHelp;//help on how to debug
-ExitTINE(I32i ec=0);
+ExitTINE("I32i ec=0");
 ```

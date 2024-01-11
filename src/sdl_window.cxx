@@ -80,7 +80,7 @@ void DrawWindowNewCB() {
                           SDL_HINT_OVERRIDE);
   win.screen_mutex     = SDL_CreateMutex();
   win.screen_done_cond = SDL_CreateCond();
-  win.window           = SDL_CreateWindow("TINE Is Not an Emulator", //
+  win.window           = SDL_CreateWindow("TempleOS", //
                                           SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                                           640, 480, SDL_WINDOW_RESIZABLE);
   auto icon = SDL_CreateRGBSurfaceWithFormat(0, TINELogo.width, TINELogo.height,
